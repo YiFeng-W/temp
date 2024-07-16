@@ -1,0 +1,335 @@
+{
+  "easycom": {
+    "autoscan": true,
+    // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/insurance/index",
+      "style": {
+        "navigationBarTitleText": "保险",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/my/index",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom" // 隐藏系统导航栏
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "璟橡",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8",
+    "app-plus": {
+      "bounce": "none"
+    }
+  },
+  // 提前分包，防止微信主包大于2m
+  "subPackages": [
+    {
+      // 首页
+      "root": "pagesHome",
+      "pages": [
+        {
+          "path": "src/information/index",
+          "style": {
+            "navigationBarTitleText": "咨迅列表"
+          }
+        },
+        {
+          "path": "src/information/details",
+          "style": {
+            "navigationBarTitleText": "资讯详情"
+          }
+        },
+        {
+          "path": "src/selfProductionRegistration/index",
+          "style": {
+            "navigationBarTitleText": "自产登记中心"
+          }
+        },
+        {
+          "path": "src/selfProductionRegistration/addSelfProducedCertificate",
+          "style": {
+            "navigationBarTitleText": "新增自产登记"
+          }
+        },
+        {
+          "path": "src/selfProductionRegistration/proveDetails",
+          "style": {
+            "navigationBarTitleText": "自产详情"
+          }
+        },
+        {
+          "path": "src/iWantToSellGoods/glueStationRrder",
+          "style": {
+            "navigationBarTitleText": "胶站售胶"
+          }
+        },
+        {
+          "path": "src/iWantToSellGoods/index",
+          "style": {
+            "navigationBarTitleText": "自产卖货"
+          }
+        },
+        {
+          "path": "src/iWantToSellGoods/displayQRCode",
+          "style": {
+            "navigationBarTitleText": "订单二维码"
+          }
+        },
+        {
+          "path": "src/iWantToSellGoods/orderInfoConfirm",
+          "style": {
+            "navigationBarTitleText": "订单信息确认"
+          }
+        },
+        {
+          "path": "src/iWantToSellGoods/paySuccess",
+          "style": {
+            "navigationBarTitleText": "订单支付成功"
+            // "navigationStyle": "custom" // 隐藏系统导航栏
+          }
+        },
+        {
+          "path": "src/myOrderForm/index",
+          "style": {
+            "navigationBarTitleText": "我的订单"
+          }
+        },
+        {
+          "path": "src/myOrderForm/generateTrade",
+          "style": {
+            "navigationBarTitleText": "胶厂收胶"
+          }
+        },
+        {
+          "path": "src/myOrderForm/payVoucher",
+          "style": {
+            "navigationBarTitleText": "支付凭证"
+          }
+        },
+        {
+          "path": "src/map/index",
+          "style": {
+            "navigationBarTitleText": "胶站地图"
+          }
+        },
+        {
+          "path": "src/rubberPrice/index",
+          "style": {
+            "navigationBarTitleText": "胶价详情"
+          }
+        },
+        {
+          "path": "src/invoicing/index",
+          "style": {
+            "navigationBarTitleText": "开票管理"
+          }
+        },
+        {
+          "path": "src/invoicing/issuingInvoices",
+          "style": {
+            "navigationBarTitleText": "开票管理"
+          }
+        },
+        {
+          "path": "src/invoicing/issuApplySuccessful",
+          "style": {
+            "navigationBarTitleText": "开票成功"
+          }
+        },
+        {
+          "path": "src/invoicing/invoiceManage",
+          "style": {
+            "navigationBarTitleText": "发票抬头管理"
+          }
+        },
+        {
+          "path": "src/invoicing/addInvoiceManage",
+          "style": {
+            "navigationBarTitleText": "添加发票抬头"
+          }
+        },
+        {
+          "path": "src/payDetails/index",
+          "style": {
+            "navigationBarTitleText": "明细"
+          }
+        },
+        {
+          "path": "src/payDetails/payList",
+          "style": {
+            "navigationBarTitleText": "明细"
+          }
+        },
+        {
+          "path": "src/payDetails/details",
+          "style": {
+            "navigationBarTitleText": "明细"
+          }
+        }
+      ]
+    },
+    {
+      // 保险
+      "root": "pagesInsurance",
+      "pages": [
+        {
+          "path": "src/index/index",
+          "style": {
+            "navigationBarTitleText": "保险"
+          }
+        }
+      ]
+    },
+    {
+      // 我的
+      "root": "pagesMy",
+      "pages": [
+        {
+          "path": "src/userInfo/index",
+          "style": {
+            "navigationBarTitleText": "身份码",
+            "navigationStyle": "custom" // 隐藏系统导航栏
+          }
+        },
+        {
+          "path": "src/userInfo/improveInformation",
+          "style": {
+            "navigationBarTitleText": "完善资料"
+          }
+        },
+        {
+          "path": "src/userInfo/authenticationInfo",
+          "style": {
+            "navigationBarTitleText": "个人资料"
+          }
+        },
+        {
+          "path": "src/bankCard/index",
+          "style": {
+            "navigationBarTitleText": "银行信息"
+          }
+        },
+        {
+          "path": "src/changePassword/index",
+          "style": {
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        {
+          "path": "src/setUp/index",
+          "style": {
+            "navigationBarTitleText": "设置"
+          }
+        },
+        {
+          "path": "src/stationInfo/index",
+          "style": {
+            "navigationBarTitleText": "商户信息"
+          }
+        },
+        {
+          "path": "src/setPrice/index",
+          "style": {
+            "navigationBarTitleText": "收胶价格"
+          }
+        }
+      ]
+    },
+    {
+      // 其他
+      "root": "pagesOther",
+      "pages": [
+        // 登录
+        {
+          "path": "src/login/index",
+          "style": {
+            "navigationBarTitleText": "登录",
+            "navigationStyle": "custom" // 隐藏系统导航栏
+          }
+        },
+        // 选择登录方式
+        {
+          "path": "src/login/roleSelection",
+          "style": {
+            "navigationBarTitleText": "登录方式",
+            "navigationStyle": "custom" // 隐藏系统导航栏
+          }
+        },
+        {
+          "path": "src/login/login",
+          "style": {
+            "navigationBarTitleText": "注册",
+            "navigationStyle": "custom" // 隐藏系统导航栏
+          }
+        },
+        {
+          "path": "src/protocol/index",
+          "style": {
+            "navigationBarTitleText": "协议"
+          }
+        }
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": [
+        "pagesHome",
+        "pagesInsurance",
+        "pagesMy",
+        "pagesOther"
+      ]
+    }
+  },
+  "tabBar": {
+    "color": "#A0A0A0",
+    "selectedColor": "#2BAE85",
+    "backgroundColor": "#FAFAFA",
+    // "borderStyle": "#FAFAFA",
+    "fontSize": "20rpx",
+    "iconWidth": "48rpx",
+    "spacing": "8rpx",
+    "height": "100rpx",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/static/home.png",
+        "selectedIconPath": "/static/inHome.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/insurance/index",
+        "iconPath": "/static/insurance.png",
+        "selectedIconPath": "/static/inInsurance.png",
+        "text": "保险"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "iconPath": "/static/my.png",
+        "selectedIconPath": "/static/inMy.png",
+        "text": "我的"
+      }
+    ]
+  }
+}
