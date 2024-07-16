@@ -10,6 +10,8 @@ import {
   getRubberStationDetail,
   getRubberStationToatl,
   getRU2409,
+  getRubberPrice,
+  getSetPriceJC,
 } from '@/api/pages/index'
 
 // 根字体大小
@@ -126,6 +128,11 @@ const getStationTotal = async () => {
   catch (e) {
     // TODO handle the exception
   }
+}
+
+// 获取胶厂信息（收胶价）
+const getDetailJC = () => {
+  getRubberPrice({ id: getUserInfo().id })
 }
 
 // 新闻列表
@@ -424,6 +431,8 @@ onShow(() => {
     uni.hideTabBar()
   }
   else if (roleFlag.value == 1) {
+    // 胶厂
+    getDetailJC()
     uni.hideTabBar()
   }
   else {
@@ -636,14 +645,14 @@ onShow(() => {
       <view class="mainBack">
         <view class="weightInfo">
           <view class="title">
-            今日收胶重量(吨)
+            今日收胶重量(公斤)
           </view>
           <view class="mount">
-            14吨
+            14公斤
           </view>
         </view>
         <view class="price">
-          <view class="priceItem" @click="goRubberPrice">
+          <view class="priceItem">
             <view class="tip">
               今日收胶单价
             </view>
@@ -652,7 +661,7 @@ onShow(() => {
             </view>
           </view>
           <view class="thougt" />
-          <view class="priceItem">
+          <view class="priceItem" @click="goRubberPrice">
             <view class="tip">
               今日期货胶价
             </view>

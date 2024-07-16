@@ -42,6 +42,16 @@ export const getSetPrice = (data: object) => {
   return request("/user/bnRubberStation/v1/updateRubberStation", "POST", data);
 };
 
+// 获取胶厂收胶价格
+export const getRubberPrice = (data: { id: any }) => {
+  return request("/user/rubberFactory/v1/getRubberPrice", "POST", data);
+};
+
+// 设置胶厂收胶价格
+export const getSetPriceJC = (data: { id: any, rubberPrice: number }) => {
+  return request("/user/rubberFactory/v1/setRubberPrice", "POST", data);
+};
+
 // 获取橡胶2409期货数据
 export const getRU2409 = () => {
   return request("https://gushitong.baidu.com/opendata?openapi=1&dspName=iphone&tn=tangram&client=app&query=RU2409&code=RU2409&word=RU2409&resource_id=51287&ma_ver=4&finClientType=pc", "GET");
