@@ -185,6 +185,18 @@
           "style": {
             "navigationBarTitleText": "明细"
           }
+        },
+        {
+          "path": "src/agent/index",
+          "style": {
+            "navigationBarTitleText": "代理收益"
+          }
+        },
+        {
+          "path": "src/agent/detail",
+          "style": {
+            "navigationBarTitleText": "申请代理收益"
+          }
         }
       ]
     },

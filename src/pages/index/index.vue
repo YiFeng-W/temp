@@ -132,7 +132,7 @@ const getStationTotal = async () => {
 
 // 获取胶厂信息（收胶价）
 const getDetailJC = () => {
-  getRubberPrice({ id: getUserInfo().id })
+  getRubberPrice({ id: '1811283020266663938' })
 }
 
 // 新闻列表
@@ -328,9 +328,15 @@ const gozcmx = () => {
 }
 // 设置收胶价
 const setPrice = () => {
-  uni.navigateTo({
-    url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}`,
-  })
+  if (roleFlag.value === 1) { // 胶厂
+    uni.navigateTo({
+      url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}`,
+    })
+  } else {
+    uni.navigateTo({
+      url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}`,
+    })
+  }
 }
 // 跳转胶站售胶
 const gojzsj = () => {
@@ -383,9 +389,8 @@ const gojcdt = () => {
 }
 // 代理收益
 const godlsy = () => {
-  uni.showToast({
-    title: '敬请期待',
-    icon: 'none',
+  uni.navigateTo({
+    url: '/pagesHome/src/agent/index',
   })
 }
 // 跳转设置
@@ -657,7 +662,7 @@ onShow(() => {
               今日收胶单价
             </view>
             <view class="mount">
-              140元/公斤
+              {{ 14 * 1000 }}元/吨
             </view>
           </view>
           <view class="thougt" />
@@ -684,7 +689,7 @@ onShow(() => {
               <image src="@/static/image/glueStation/kpgl.png" class="img" />
               <view>开票管理</view>
             </view>
-            <view class="manameItem2" @click="goszsjz">
+            <view class="manameItem2" @click="setPrice">
               <image src="@/static/image/glueStation/sjjg.png" class="img" />
               <view>设置收胶价</view>
             </view>
