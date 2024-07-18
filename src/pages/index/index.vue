@@ -421,9 +421,8 @@ const gojcdt = () => {
 }
 // 代理收益
 const godlsy = () => {
-  uni.showToast({
-    title: '敬请期待',
-    icon: 'none',
+  uni.navigateTo({
+    url: '/pagesHome/src/agent/index',
   })
 }
 // 跳转设置
