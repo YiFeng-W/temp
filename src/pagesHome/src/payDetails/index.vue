@@ -6,37 +6,46 @@
 				<view class="flex-row" style="border-bottom: 4rpx solid #F5F5F5;">
 					<view class="table flex-col justify-center items-center" style="border-right: 4rpx solid #F5F5F5;">
 						<view class="tit">本月订单金额（元）</view>
-						<view class="text">300.89</view>
+						<view class="text">{{ pageData.totalAmount }}</view>
 					</view>
 					<view class="table flex-col justify-center items-center">
-						<view class="tit">实收金额（元）</view>
-						<view class="text">300.89</view>
+						<view class="tit">订单数量（单）</view>
+						<view class="text">{{ pageData.orderCount }}</view>
 					</view>
 				</view>
 				<view class="flex-row">
 					<view class="table flex-col justify-center items-center" style="border-right: 4rpx solid #F5F5F5;">
-						<view class="tit">已结算金额（元）</view>
-						<view class="text">300.89</view>
+						<view v-if="summaryType == '1'" class="tit">待胶厂支付金额（元）</view>
+						<view v-if="summaryType == '2'" class="tit">待付款金额（元）</view>
+						<view class="text">{{ pageData.willPayAmount }}</view>
 					</view>
 					<view class="table flex-col justify-center items-center">
-						<view class="tit">订单数量（单）</view>
-						<view class="text">300.89</view>
+						<view v-if="summaryType == '1'" class="tit">已收款金额（元）</view>
+						<view v-if="summaryType == '2'" class="tit">已支付金额（元）</view>
+						<view class="text">{{ pageData.finishedAmount }}</view>
 					</view>
 				</view>
 			</view>
 			<view class="list">
 				<view class="row flex-row justify-between items-center" 
-							v-for="(item,id) in 5" :key="id"
-							@click="goDetails">
+							v-for="(item, id) in pageData.daySummaryList" :key="id"
+							@click="goDetails(item)">
 					<image src="../../../static/image/avatar.png" mode="scaleToFill"></image>
 					<view class="flex-col" style="width: 570rpx;">
 						<view class="text1 flex-row justify-between items-center">
-							<view>共4单</view>
-							<view>¥390.22</view>
+							<view>共{{ item.orderCount }}单</view>
+							<view>¥{{ item.totalAmount }}</view>
+						</view>
+						<view v-if="summaryType == '1'" class="text2 flex-row items-center">
+							<view class="txt">已收款订单{{ item.finishedCount }}</view>
+							<view class="txt">待胶厂订单{{ item.willPayCount }}</view>
+						</view>
+						<view v-if="summaryType == '2'" class="text2 flex-row items-center">
+							<view class="txt">已支付订单{{ item.finishedCount }}</view>
+							<view class="txt">待付款订单{{ item.willPayCount }}</view>
 						</view>
 						<view class="text2 flex-row justify-between items-center">
-							<view>2024-05-31</view>
-							<view>未结算</view>
+							<view>{{ item.date }}</view>
 						</view>
 					</view>
 				</view>
@@ -49,7 +58,46 @@
 <script lang="ts" setup>
 	import { ref } from 'vue';
 	import { onShow } from '@dcloudio/uni-app';
-	import { getFontSize } from '@/utils/local-storage'
+	import { getFontSize, getUserInfo } from '@/utils/local-storage'
+	import { orderSummary, orderListByDay } from '@/api/pages/index'
+
+	const summaryType = ref<string>() // 1-收入 2-支出
+	const rubberUserType = ref<string>() // 1-胶站用户 2-胶厂用户
+
+	onLoad((options: any) => {
+		summaryType.value = options.summaryType
+		rubberUserType.value = uni.getStorageSync('userInfo').buyerOrSeller == 1 ? '2' : '1'
+
+		getOrderSummary()
+	})
+
+	const pageData = ref<any>([])
+	const getOrderSummary = async () => {
+		uni.showLoading({
+			title: '加载中',
+			mask: true
+		})
+		let year = new Date().getFullYear()
+		let month: string | number = new Date().getMonth() + 1;
+		month = month < 10 ? ('0' + month ): month;
+		const res: any = await orderSummary({
+			summaryType: summaryType.value,
+			rubberUserType: rubberUserType.value,
+			userId: getUserInfo().id,
+			monthDate: `${year}-${month}`
+		})
+		uni.hideLoading()
+		if (res.success) {
+			pageData.value = res.data
+			console.log('pageData', pageData);
+			
+		} else {
+			uni.showToast({
+        title: res.msg,
+        icon: 'none',
+      })
+		}
+	}
 
 	// 根字体大小
 	const baseFontSize = ref<number>(1)
@@ -57,13 +105,13 @@
 	// 跳转下级
 	const go = () => {
 		uni.navigateTo({
-			url: '/pagesHome/src/payDetails/payList'
+			url: `/pagesHome/src/payDetails/payList?summaryType=${summaryType.value}`
 		});
 	}
 	// 跳转详情
 	const goDetails = (item: any) => {
 		uni.navigateTo({
-			url: '/pagesHome/src/payDetails/details'
+			url: `/pagesHome/src/payDetails/details?summaryType=${summaryType.value}&date=${item.date}`
 		});
 	}
 
@@ -126,6 +174,9 @@
 					color: $sbgcolor5;
 					line-height: $text4;
 					margin-top: 8rpx;
+					.txt {
+						margin-right: 24rpx;
+					}
 				}
 			}
 		}

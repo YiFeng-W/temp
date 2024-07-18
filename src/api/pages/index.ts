@@ -42,9 +42,19 @@ export const getSetPrice = (data: object) => {
   return request("/user/bnRubberStation/v1/updateRubberStation", "POST", data);
 };
 
+// 获取胶厂信息
+export const getFactoryInfo = () => {
+  return request("http://47.109.129.34:8091/user/rubberFactory/v1/getRubberFactoryDetail", "GET");
+};
+
 // 获取胶厂收胶价格
 export const getRubberPrice = (data: { id: any }) => {
   return request("/user/rubberFactory/v1/getRubberPrice", "POST", data);
+};
+
+// 获取胶厂今日收胶订单信息
+export const getTodayOrdersInfo = () => {
+  return request("http://47.109.129.34:8091/user/rubberFactory/v1/getTodayOrdersInfo", "GET");
 };
 
 // 设置胶厂收胶价格
@@ -54,5 +64,15 @@ export const getSetPriceJC = (data: { id: any, rubberPrice: number }) => {
 
 // 获取橡胶2409期货数据
 export const getRU2409 = () => {
-  return request("https://gushitong.baidu.com/opendata?openapi=1&dspName=iphone&tn=tangram&client=app&query=RU2409&code=RU2409&word=RU2409&resource_id=51287&ma_ver=4&finClientType=pc", "GET");
+  return request("http://47.109.129.34:8091/user/futures/price", "GET");
 };
+
+// 获取当月订单统计
+export const orderSummary = (data: object) => {
+  return request("http://47.109.129.34:8091/user/orderStatistics/month/summary", "POST", data);
+}
+
+// 获取当月订单统计
+export const orderListByDay = (data: object) => {
+  return request("http://47.109.129.34:8091/user/orderStatistics/day/orderPage", "POST", data);
+}
