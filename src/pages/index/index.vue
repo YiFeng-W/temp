@@ -11,6 +11,8 @@ import {
   getRubberStationToatl,
   getRU2409,
   getRubberPrice,
+  getFactoryInfo,
+  getTodayOrdersInfo,
   getSetPriceJC,
 } from '@/api/pages/index'
 
@@ -32,9 +34,15 @@ const stationcode = ref<any>()
 // 今日胶厂价格
 const stationPrice = ref<any>()
 // 收胶重量
-const stationNum = ref<any>()
+const stationNum = ref<any>(0)
 // 胶站id
 const stationId = ref<any>()
+// 胶厂id
+const factoryId = ref<any>()
+// 胶厂价格
+const factoryPrice = ref<any>(0)
+// 胶厂收胶重量
+const factoryCount = ref<any>()
 // 功能列表
 const gnList = ref<any>([
   {
@@ -72,11 +80,12 @@ const have = (value: any) => {
 // 获取今日胶价
 const getPrice = async () => {
   try {
-    const res: any = await getProductPriceTrendDetail()
+    const res: any = await getRU2409()
     if (res.success) {
-      newPrice.value = res.data.averagePrice
+      console.log(res);
+      newPrice.value = Number(res.data.curData.price);
       gnList.value[3].path
-        = `/pagesHome/src/iWantToSellGoods/index?amt=${res.data.averagePrice}`
+        = `/pagesHome/src/iWantToSellGoods/index?amt=${newPrice.value}`
     }
     else {
       uni.showToast({
@@ -130,9 +139,32 @@ const getStationTotal = async () => {
   }
 }
 
+// 获取胶厂收胶重量
+const getFactoryWeight = async () => {
+  const res: any = await getTodayOrdersInfo()
+  if (res.success) {
+    factoryCount.value = res.data.totalCount
+  } else {
+    uni.showToast({
+      title: res.msg,
+      icon: 'none',
+    })
+  }
+}
+
 // 获取胶厂信息（收胶价）
-const getDetailJC = () => {
-  getRubberPrice({ id: '1811283020266663938' })
+const getDetailJC = async () => {
+  const res: any = await getFactoryInfo()
+  if (res.success) {
+    factoryId.value = res.data.id
+    factoryPrice.value = res.data.rubberPrice
+  }
+  else {
+    uni.showToast({
+      title: res.msg,
+      icon: 'none',
+    })
+  }
 }
 
 // 新闻列表
@@ -328,13 +360,13 @@ const gozcmx = () => {
 }
 // 设置收胶价
 const setPrice = () => {
-  if (roleFlag.value === 1) { // 胶厂
+  if (roleFlag.value == 1) { //  胶厂
     uni.navigateTo({
-      url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}`,
+      url: `/pagesMy/src/setPrice/index?id=${factoryId.value}&amt=${factoryPrice.value}&price=${newPrice.value}`,
     })
   } else {
     uni.navigateTo({
-      url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}`,
+      url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}&price=${newPrice.value}`,
     })
   }
 }
@@ -368,10 +400,10 @@ const goshjdd = () => {
   }
 }
 // 收入明细
-const gosrmx = () => {
+const gosrmx = (type: 1 | 2) => {
   if (have(getToken())) {
     uni.navigateTo({
-      url: '/pagesHome/src/payDetails/index',
+      url: `/pagesHome/src/payDetails/index?summaryType=${type}`,
     })
   }
   else {
@@ -421,9 +453,6 @@ const gofptt = () => {
 
 onLoad(() => {
   console.log('onload');
-  getRU2409().then((res: any) => {
-    console.log(res.Result[0].DisplayData.resultData.tplData.result);
-  })
 })
 onShow(() => {
   baseFontSize.value = getFontSize()
@@ -438,6 +467,7 @@ onShow(() => {
   else if (roleFlag.value == 1) {
     // 胶厂
     getDetailJC()
+    getFactoryWeight()
     uni.hideTabBar()
   }
   else {
@@ -575,7 +605,7 @@ onShow(() => {
               <image src="@/static/image/glueStation/sjdd.png" class="img" />
               <view>收胶订单</view>
             </view>
-            <view class="manameItem" @click="gozcmx">
+            <view class="manameItem" @click="gosrmx(2)">
               <image src="@/static/image/glueStation/zcmx.png" class="img" />
               <view>支出统计</view>
             </view>
@@ -599,7 +629,7 @@ onShow(() => {
               <image src="@/static/image/glueStation/shjdd.png" class="img" />
               <view>售胶订单</view>
             </view>
-            <view class="manameItem" @click="gosrmx">
+            <view class="manameItem" @click="gosrmx(1)">
               <image src="@/static/image/glueStation/srmx.png" class="img" />
               <view>收入统计</view>
             </view>
@@ -653,7 +683,7 @@ onShow(() => {
             今日收胶重量(公斤)
           </view>
           <view class="mount">
-            14公斤
+            {{ factoryCount }}公斤
           </view>
         </view>
         <view class="price">
@@ -662,7 +692,7 @@ onShow(() => {
               今日收胶单价
             </view>
             <view class="mount">
-              {{ 14 * 1000 }}元/吨
+              {{ factoryPrice }}元/公斤
             </view>
           </view>
           <view class="thougt" />
@@ -684,6 +714,10 @@ onShow(() => {
             <view class="manameItem2" @click="gosjdd">
               <image src="@/static/image/glueStation/sjdd.png" class="img" />
               <view>收胶订单</view>
+            </view>
+            <view class="manameItem2" @click="gosrmx(2)">
+              <image src="@/static/image/glueStation/zcmx.png" class="img" />
+              <view>支出统计</view>
             </view>
             <view class="manameItem2" @click="gokpgl">
               <image src="@/static/image/glueStation/kpgl.png" class="img" />

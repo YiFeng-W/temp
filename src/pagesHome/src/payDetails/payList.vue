@@ -4,10 +4,10 @@
 		<view class="pd">
 			<view class="box flex-row justify-between items-center">
 				<view class="overview">
-					<view>订单金额：20000.00 元</view>
-					<view style="margin-top: 36rpx;">实收金额：20000.00 元</view>
-					<view style="margin-top: 36rpx;">已结算：19000.00 元</view>
-					<view style="margin-top: 36rpx;">订单数量：100 单</view>
+					<view>订单金额：{{ pageData.totalAmount }} 元</view>
+					<view style="margin-top: 36rpx;">已支付金额：{{ pageData.finishedAmount }} 元</view>
+					<view style="margin-top: 36rpx;">待付款：{{ pageData.willPayAmount }} 元</view>
+					<view style="margin-top: 36rpx;">订单数量：{{ pageData.orderCount }} 单</view>
 				</view>
 				<view class="date flex-row items-center" @click="showDatePicker = true">
 					<text>{{isDate}}&emsp13;</text>
@@ -17,17 +17,24 @@
 			<up-datetime-picker :show="showDatePicker" v-model="datePicker" mode="year-month" title="选择日期"
 				@cancel="showDatePicker = false" @confirm="confirmDatePicker">
 			</up-datetime-picker>
-			<scroll-view scroll-y="true" lower-threshold="20" @scrolltolower="loadMore" class="list">
-				<view class="row flex-row justify-between items-center" v-for="(item,id) in 20" :key="id" @click="go(item)">
+			<scroll-view :scroll-y="true" lower-threshold="20" @scrolltolower="loadMore" class="list">
+				<view class="row flex-row justify-between items-center" v-for="(item,id) in pageData.daySummaryList" :key="id" @click="go(item)">
 					<image src="../../../static/image/avatar.png" mode="scaleToFill"></image>
 					<view class="flex-col" style="width: 570rpx;">
 						<view class="text1 flex-row justify-between items-center">
-							<view>共4单</view>
-							<view>¥390.22</view>
+							<view>共{{ item.orderCount }}单</view>
+							<view>¥{{ item.totalAmount }}</view>
+						</view>
+						<view v-if="summaryType == '1'" class="text2 flex-row items-center">
+							<view class="txt">已收款订单{{ item.finishedCount }}</view>
+							<view class="txt">待胶厂订单{{ item.willPayCount }}</view>
+						</view>
+						<view v-if="summaryType == '2'" class="text2 flex-row items-center">
+							<view class="txt">已支付订单{{ item.finishedCount }}</view>
+							<view class="txt">待付款订单{{ item.willPayCount }}</view>
 						</view>
 						<view class="text2 flex-row justify-between items-center">
-							<view>2024-05-31</view>
-							<view>未结算</view>
+							<view>{{ item.date }}</view>
 						</view>
 					</view>
 				</view>
@@ -39,8 +46,45 @@
 <script lang="ts" setup>
 	import { ref } from 'vue';
 	import { onShow } from '@dcloudio/uni-app';
-	import { getFontSize } from '@/utils/local-storage'
 	import dayjs from 'dayjs';
+
+	import { getFontSize, getUserInfo } from '@/utils/local-storage'
+	import { orderSummary, orderListByDay } from '@/api/pages/index'
+
+	const summaryType = ref<string>() // 1-收入 2-支出
+	const rubberUserType = ref<string>() // 1-胶站用户 2-胶厂用户
+
+	onLoad((options: any) => {
+		console.log('options', options);
+		
+		summaryType.value = options.summaryType
+		rubberUserType.value = uni.getStorageSync('userInfo').buyerOrSeller == 1 ? '2' : '1'
+		isDate.value = dayjs(new Date).format('YYYY-MM')
+		getOrderSummary()
+	})
+
+	const pageData = ref<any>([])
+	const getOrderSummary = async () => {
+		uni.showLoading({
+			title: '加载中',
+			mask: true
+		})
+		const res: any = await orderSummary({
+			summaryType: summaryType.value,
+			rubberUserType: rubberUserType.value,
+			userId: getUserInfo().id,
+			monthDate: isDate.value
+		})
+		uni.hideLoading()
+		if (res.success) {
+			pageData.value = res.data
+		} else {
+			uni.showToast({
+        title: res.msg,
+        icon: 'none',
+      })
+		}
+	}
 
 	// 根字体大小
 	const baseFontSize = ref<number>(1)
@@ -54,7 +98,9 @@
 
 	// 选择时间时点击确定
 	const confirmDatePicker = (e : any) => {
-		isDate.value = dayjs(e.value).format('YYYY年MM月')
+		isDate.value = dayjs(e.value).format('YYYY-MM')
+		console.log('isDate', isDate.value);
+		getOrderSummary()
 		showDatePicker.value = false
 	}
 	
@@ -66,13 +112,12 @@
 	// 跳转下级
 	const go = (item: any) => {
 		uni.navigateTo({
-			url: '/pagesHome/src/payDetails/details'
+			url: `/pagesHome/src/payDetails/details?summaryType=${summaryType.value}&date=${item.date}`
 		});
 	}
 
 	onShow(() => {
 		baseFontSize.value = getFontSize()
-		isDate.value = dayjs(new Date).format('YYYY年MM月')
 	})
 </script>
 
@@ -128,6 +173,9 @@
 					color: $sbgcolor5;
 					line-height: $text1;
 					margin-top: 8rpx;
+					.txt {
+						margin-right: 24rpx;
+					}
 				}
 			}
 		}
