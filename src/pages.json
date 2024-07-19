@@ -135,7 +135,10 @@
         {
           "path": "src/rubberPrice/index",
           "style": {
-            "navigationBarTitleText": "胶价详情"
+            "navigationBarTitleText": "胶价详情",
+            "usingComponents": {
+              "lei-vchart": "/src/uni_modules/lei-vchart/components/lei-vchart/lei-vchart"
+            }
           }
         },
         {
