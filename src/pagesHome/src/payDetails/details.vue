@@ -141,11 +141,11 @@ const goOrderDetail = (id: string) => {
     url = `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?orderId=${id}&orderType=1`
   }
   else if (userType.value == 3) {
-    if (summaryType.value == '2') {
+    if (summaryType.value == '1') {
       url = `/pagesHome/src/myOrderForm/generateTrade?orderId=${id}`
     }
     else {
-      url = `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?orderId=${id}&orderType=1`
+      url = `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?orderId=${id}&orderType=2`
     }
   }
   else {

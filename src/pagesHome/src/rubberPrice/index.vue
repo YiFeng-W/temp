@@ -7,7 +7,7 @@
 					<view class="header"></view>
 					<view class="text">橡胶期货价曲线图</view>
 				</view>
-				<view class="unit">单位：元</view>
+				<view class="unit">单位：元/吨</view>
 			</view>
 			<view class="box">
 				<l-echart class="line-chart" ref="lineChartRef"></l-echart>
@@ -32,15 +32,11 @@ const baseFontSize = ref<number>(1)
 
 onLoad(() => {
 	baseFontSize.value = getFontSize()
-	spec.data.values = ej.marketData.marketData.splice(-30).map(item => {
+	ej.marketData.marketData.forEach(item => {
 		const x = item.split(',')[1]
 		const y = item.split(',')[3]
-		echartsData.value.xData.push(x)
+		echartsData.value.xData.push(x.substring(5))
 		echartsData.value.yData.push(y)
-		return({
-			time: item.split(',')[1],
-			value: item.split(',')[3]
-		});
 
 	})
 	setTimeout(() => {
@@ -48,17 +44,6 @@ onLoad(() => {
 	}, 20)
 
 })
-const spec: any = {
-	type: 'line',
-	data: {
-		values: []
-	},
-	point: {
-		visible: false
-	},
-	xField: 'time',
-	yField: 'value'
-};
 
 
 const lineChartRef = ref()
@@ -93,6 +78,7 @@ const loadLineData = () => {
 			top: 20,
 			left: 50,
 			bottom: 20,
+			right: 10
 		},
 		//y轴设置
 		yAxis: {
@@ -114,7 +100,7 @@ const loadLineData = () => {
 		tooltip: {
 			trigger: 'axis',
 			triggerOn: 'click',
-			formatter: '{b} \n 数据: {c}'
+			formatter: '{b} \n 橡胶期货价: {c}'
 		},
 		//设置曲线的颜色
 		color: ['#4e9d77'],
@@ -126,10 +112,10 @@ const loadLineData = () => {
 			smooth: true,
 		}],
 		//设置数据缩放，手指缩放
-		// dataZoom:{
-		// 		type:'inside',//inside移动端就是手指缩放，slider
-		// 		id:'123',
-		// }
+		dataZoom:{
+				type: 'inside',//inside移动端就是手指缩放，slider
+				id:'123',
+		}
 	};
 
 	lineChartRef.value.init(echarts, (chart: any) => {

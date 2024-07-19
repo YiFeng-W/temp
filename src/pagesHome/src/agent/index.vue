@@ -196,9 +196,9 @@ const changeMonthly = (id: any) => {
 }
 
 // 开始时间
-const startDate = ref<any>('起始时间')
+const startDate = ref<any>('')
 // 结束时间
-const endDate = ref<any>('终止时间')
+const endDate = ref<any>('')
 // 选择时间
 const showCalendar = ref<boolean>(false)
 // 开始选择时间
@@ -344,11 +344,11 @@ onShow(() => {
         </view>
         <view class="custom flex-row justify-between items-center">
           <view class="date" @click="selectDate(1, startDate)">
-            {{ startDate }}
+            {{ startDate || '起始时间' }}
           </view>
           <view class="to" />
           <view class="date" @click="selectDate(2, startDate)">
-            {{ endDate }}
+            {{ endDate || '结束时间' }}
           </view>
         </view>
         <up-calendar :show="showCalendar" @close="showCalendar = false" />
@@ -562,7 +562,7 @@ onShow(() => {
     margin-top: 60rpx;
 
     .date {
-      padding: 18rpx 80rpx;
+      padding: 18rpx 40rpx;
       border-radius: $radius7;
       border: 2rpx solid $sbgcolor5;
       font-size: $text2;

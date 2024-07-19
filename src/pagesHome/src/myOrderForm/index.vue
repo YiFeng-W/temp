@@ -23,6 +23,8 @@ const userContent = ref<any>({
   czBtn: '',
   qdBtn: '',
 })
+const placeholder = ref<string>('')
+
 // 订单表单
 const form = ref<any>([])
 // 判断用户使用内容
@@ -134,7 +136,8 @@ const getOrderList = async () => {
     buyerOrSeller: orderType.value === '1' ? 2 : 1,
     type: type.value,
     startDate:startDate.value,
-    endDate:endDate.value
+    endDate:endDate.value,
+    keywords: keyWord.value
   }
   try {
     const res: any = await getQrOrderList(data)
@@ -165,6 +168,11 @@ const getOrderList = async () => {
     moreStatus.value = 'more'
     showMore.value = false
   }
+}
+const enterSearchitect = () => {
+  form.value = []
+  page.value = 1
+  getOrderList()
 }
 // tab改变时
 const changeTab = (e: any) => {
@@ -407,6 +415,18 @@ const goInvoice = () => {
 
 onLoad((e: any) => {
   orderType.value = e.type
+  keyWord.value = ''
+  if (userType == 1) {
+    placeholder.value = '请输入胶站名称'
+  } else if (userType == 2) {
+    placeholder.value = '请输入胶站名称'
+  } else {
+    if (e.type == 2) {
+      placeholder.value = '请输入胶农名称'
+    } else {
+      placeholder.value = '请输入胶厂名称'
+    }
+  }
   judgeUser()
 })
 
@@ -424,7 +444,7 @@ onShow(() => {
       <view class="spd flex-row justify-between">
         <view class="screen flex-row justify-between items-center">
           <up-icon name="search" color="#A0A0A0" size="48rpx" />
-          <input v-model="keyWord" placeholder="请输入胶站名称">
+          <input v-model="keyWord" :placeholder="placeholder" confirm-type="search" @confirm="enterSearchitect">
         </view>
         <image :src="userContent.screen" mode="scaleToFill" @click="showPopup = true" />
       </view>
@@ -805,7 +825,7 @@ onShow(() => {
     margin-top: 60rpx;
 
     .date {
-      padding: 18rpx 80rpx;
+      padding: 18rpx 40rpx;
       border-radius: $radius7;
       border: 2rpx solid $sbgcolor5;
       font-size: $text2;

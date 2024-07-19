@@ -2,7 +2,7 @@ import {request} from "@/utils/request"
 
 // 获取扫码订单列表
 export const getQrOrderList = (data: object) => {
-    return request("/user/qrcodeOrder/v1/getQrOrderList", 'POST', data)
+    return request("http://47.109.129.34:8091/user/qrcodeOrder/v1/getQrOrderList", 'POST', data)
 }
 
 // 取消订单

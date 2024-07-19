@@ -285,13 +285,14 @@ const goNewsDetails = (item: any) => {
 const scanTheCode = () => {
   uni.scanCode({
     success: async (res: any) => {
-      console.log('res', res);
       
       if (res.result.includes('userId')) {
         const obja: any = res.result.split('{')
         const objb: any = obja[1].split('}')
         const objc: any = objb[0].split(',')
         const obj: any = objc[1].split(':')
+        console.log(obj[1]);
+        
         try {
           const res: any = await bindSeller({
             sellerId: obj[1],

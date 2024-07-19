@@ -127,7 +127,7 @@ const getNumber = async () => {
       type: form.value.rubberType,
     })
     if (res.success) {
-      remainingQuantity.value = res.data.remainWeight / 1000
+      remainingQuantity.value = (res.data.remainWeight / 1000).toFixed(2)
     }
     else {
       uni.showToast({
@@ -175,7 +175,9 @@ const newGoodsFileList = (a: any, b: any) => {
 const forbidden = ref<boolean>(false)
 // 提交
 const submit = async () => {
-  if (remainingQuantity.value < form.value.productNumber) {
+  console.log('remainingQuantity.value < form.value.productNumber', remainingQuantity.value,  form.value.productNumber);
+  
+  if (Number(remainingQuantity.value) < Number(form.value.productNumber)) {
     uni.showToast({
       title: '重量不能超过剩余数量',
       icon: 'none',
@@ -189,7 +191,7 @@ const submit = async () => {
       })
       forbidden.value = true
       form.value.productUnitPrice = Number(form.value.productUnitPrice).toFixed(2)
-      const res: any = await rubberStationGenOrder(form.value)
+      const res: any = await rubberStationGenOrder({ ...form.value,  productNumber: form.value.productNumber * 1000 })
       if (res.success) {
         uni.hideLoading()
         forbidden.value = false
