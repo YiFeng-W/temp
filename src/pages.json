@@ -137,7 +137,7 @@
           "style": {
             "navigationBarTitleText": "胶价详情",
             "usingComponents": {
-              "lei-vchart": "/src/uni_modules/lei-vchart/components/lei-vchart/lei-vchart"
+              "l-echart": "/src/uni_modules/lime-echart/components/l-echart/l-echart"
             }
           }
         },

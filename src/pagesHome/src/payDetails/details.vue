@@ -135,8 +135,23 @@ const getOrderListByDay = async () => {
 	}
 }
 
-const goOrderDetail = (orderId: string) => {
-
+const goOrderDetail = (id: string) => {
+	let url = ''
+	if (userType.value == 2) {
+    url = `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?orderId=${id}&orderType=1`
+  }
+  else if (userType.value == 3) {
+    if (summaryType.value == '2') {
+      url = `/pagesHome/src/myOrderForm/generateTrade?orderId=${id}`
+    }
+    else {
+      url = `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?orderId=${id}&orderType=1`
+    }
+  }
+  else {
+    url = `/pagesHome/src/myOrderForm/generateTrade?orderId=${id}`
+  }
+	uni.navigateTo({ url })
 }
 
 // 根字体大小
