@@ -126,7 +126,7 @@
 				</view>
 			</view>
 			<view class="function">
-				<view v-if="(form.orderRubberExtendVO.checkStatus === 1||form.orderRubberExtendVO.checkStatus === 2) && buyerOrSeller === 2" class="btn items-center justify-center" @click="showPopup">确认收款</view>
+				<view v-if="(form.orderRubberExtendVO.checkStatus === 1||form.orderRubberExtendVO.checkStatus === 2) && form.sellerName === currentUserName" class="btn items-center justify-center" @click="showPopup">确认收款</view>
 				<!-- <view v-if="form.orderRubberExtendVO.checkStatus === 1 && buyerOrSeller !== 2" class="btn items-center justify-center" @click="showPopup">线下支付</view> -->
 				<view v-if="form.orderRubberExtendVO.checkStatus === 1 && buyerOrSeller !== 2" class="flex-row justify-between">
 					<view class="btn1 items-center justify-center" @click="binding">线上支付</view>
@@ -169,6 +169,8 @@
 	const checkboxValue = ref<any>([])
 	// 是否显示弹窗
 	const show = ref<boolean>(false)
+	// 当前登录的用户名称
+	const currentUserName = ref<string>()
 	// 上传证明时的表单
 	const form = ref<any>({
 		"buyerId": 0,
@@ -243,6 +245,7 @@
 			const res : any = await getQrOrderDetail(parameter.value)
 			if (res.success) {
 				form.value = res.data
+				console.log(form)
 				if (res.data.qrcodeOrderVO.productImage !== null) {
 					if (res.data.qrcodeOrderVO.productImage[0] !== "") {
 						res.data.qrcodeOrderVO.productImage.forEach((item : any) => {
@@ -535,6 +538,9 @@
 	}
 
 	onLoad((e : any) => {
+		if (have(getUserInfo().nickName)) {
+			currentUserName.value = getUserInfo().nickName
+		}
 		if (have(getUserInfo().buyerOrSeller)) {
 			buyerOrSeller.value = getUserInfo().buyerOrSeller
 		} else {

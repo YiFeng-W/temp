@@ -6,20 +6,20 @@
 				<view class="row">
 					<view class="flex-row items-center justify-between">
 						<view class="tit">分类名称</view>
-						<view class="rinput flex-row items-center justify-end" @click="showSort = true">
+						<view class="rinput flex-row items-center justify-end" @click="clickCategoryName">
 							<text v-if="form.categoryName">{{ form.categoryName }}</text>
 							<text v-else class="tip">请选择分类</text>
 							<up-icon name="arrow-right" color="#A0A0A0" size="32rpx"></up-icon>
 						</view>
 					</view>
-					<up-picker v-model="form.categoryName" :show="showSort" :columns="classificationList" @cancel="cancelSort"
-						@confirm="confirmSort" keyName="categoryName"></up-picker>
+					<up-picker v-model="form.categoryName" :show="showSort" :columns="classificationList"
+						@cancel="cancelSort" @confirm="confirmSort" keyName="categoryName"></up-picker>
 				</view>
 				<view class="row flex-row items-center justify-between">
 					<view class="tit">商品名称</view>
 					<view class="rinput">
-						<input v-model="form.productName" class="tend" placeholder="请输入商品名称" placeholder-class="placeholder"
-							type="text" />
+						<input v-model="form.productName" class="tend" placeholder="请输入商品名称"
+							placeholder-class="placeholder" type="text" />
 					</view>
 				</view>
 				<view v-if="have(form.categoryName)" class="row flex-row items-center justify-between">
@@ -40,8 +40,8 @@
 						<text v-if="have(form.rubberType)" class="tend">{{form.rubberType===1?'胶水':'胶块'}}</text>
 						<text v-else class="tend" style="color: #A0A0A0;">请选择橡胶类型</text>
 					</view>
-					<up-picker :show="pickerType" :columns="typeColumns" keyName="name"
-										 @cancel="cancelType" @confirm="confirmType" :defaultIndex="typeIndex"></up-picker>
+					<up-picker :show="pickerType" :columns="typeColumns" keyName="name" @cancel="cancelType"
+						@confirm="confirmType" :defaultIndex="typeIndex"></up-picker>
 				</view>
 				<view v-if="form.rubberType===1" class="row flex-row items-center justify-between">
 					<view class="tit">干含比</view>
@@ -54,8 +54,8 @@
 				<view class="row flex-row items-center justify-between">
 					<view class="tit">单价</view>
 					<view class="rinput flex-row items-center justify-end">
-						<input v-model="form.productUnitPrice" class="tend" placeholder="请输入单价" placeholder-class="placeholder"
-							type="digit" @blur="blurdj" />
+						<input v-model="form.productUnitPrice" class="tend" placeholder="请输入单价"
+							placeholder-class="placeholder" type="digit" @blur="blurdj" />
 						<!-- <text>{{ form.productUnitPrice }}</text> -->
 						<text style="width: 200rpx;text-align: end;">元/公斤</text>
 					</view>
@@ -63,8 +63,8 @@
 				<view class="row flex-row items-center justify-between">
 					<view class="tit">重量</view>
 					<view class="rinput flex-row items-center justify-end">
-						<input v-model="form.usageQuantity" class="tend" placeholder="请输入重量" placeholder-class="placeholder"
-							type="digit" />
+						<input v-model="form.usageQuantity" class="tend" placeholder="请输入重量"
+							placeholder-class="placeholder" type="digit" />
 						<text style="width: 110rpx;text-align: end;">公斤</text>
 					</view>
 				</view>
@@ -87,7 +87,8 @@
 				</up-checkbox-group>
 				<view>阅读并同意<text @click="goProtocol(3)">《璟橡农产品交易协议》</text></view>
 			</view>
-			<view class="btn items-center justify-center" :class="forbidden?'forbidden':''" @click="submit">提交订单信息</view>
+			<view class="btn items-center justify-center" :class="forbidden?'forbidden':''" @click="submit">提交订单信息
+			</view>
 		</view>
 	</view>
 </template>
@@ -100,7 +101,6 @@
 	import { Decimal } from 'decimal.js'
 	import { getUserInfo, setQRCode, getFontSize } from '@/utils/local-storage'
 	import SmtUpload from '@/components/smt-upload/index.vue'
-
 	// 根字体大小
 	const baseFontSize = ref<number>(1)
 	// 获取个人信息
@@ -139,13 +139,16 @@
 	const have = (e : any) => {
 		return e !== null && e !== undefined && e !== ''
 	}
-	
+
 	// 计算总价
 	const totalPrice = computed(() => {
-		if (have(form.value.usageQuantity) && have(form.value.productUnitPrice) && have(form.value.dryWater)) {
+		if (have(form.value.usageQuantity) && have(form.value.productUnitPrice)) {
 			const zj = new Decimal(form.value.usageQuantity).mul(new Decimal(form.value.productUnitPrice))
-			form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater/100))).toFixed(2)
-			console.log(form.value.productTotalPrice);
+			if (form.value.rubberType==1 && form.value.dryWater) {
+				form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater / 100))).toFixed(2)
+			}else{
+				form.value.productTotalPrice = new Decimal(zj).toFixed(2)
+			}
 			return form.value.productTotalPrice
 		} else {
 			return ''
@@ -178,8 +181,23 @@
 		if (res.success) {
 			classificationList.value[0] = res.data.records
 		}
+		if (classificationList.value == '') {
+			classificationList.value = []
+		}
 	}
-	
+	// 点击分类
+	const clickCategoryName = () => {
+		console.log(classificationList.value)
+		if (classificationList.value.length < 1) {
+			uni.showToast({
+				title: '当前没有可选择的分类，请先完善自产证明以添加商品分类!',
+				icon: 'none',
+				duration: 3000
+			})
+			return
+		}
+		showSort.value = true
+	}
 	// 橡胶类型选择器
 	const pickerType = ref<boolean>(false)
 	// 橡胶类型内容
@@ -207,17 +225,17 @@
 		form.value.rubberType = e.value[0].id
 		pickerType.value = false
 	}
-	
+
 	// 单价开始价格
 	const unitPrice = ref<any>(0)
 	// 单价处理
 	const blurdj = () => {
 		const maxPrice = Number(new Decimal(unitPrice.value).mul(new Decimal(1.25)))
 		const minPrice = Number(new Decimal(unitPrice.value).mul(new Decimal(0.75)))
-		if(form.value.productUnitPrice > maxPrice || form.value.productUnitPrice < minPrice) {
+		if (form.value.productUnitPrice > maxPrice || form.value.productUnitPrice < minPrice) {
 			form.value.productUnitPrice = unitPrice.value
 			uni.showToast({
-				title: '单价不能大于'+maxPrice+'或小于'+minPrice,
+				title: '单价不能大于' + maxPrice + '或小于' + minPrice,
 				icon: 'none'
 			})
 		}
@@ -260,18 +278,27 @@
 			//TODO handle the exception
 		}
 	}
-	
+
 	// 提交时禁用按钮？
 	const forbidden = ref<boolean>(false)
 	// 提交
 	const submit = async () => {
+		console.log(form.value.productTotalPrice,form.value.usageQuantity)
+		console.log(form.value.productTotalPrice== "0.00", form.value.usageQuantity=='0')
+		if(form.value.productTotalPrice=="0.00"|| form.value.usageQuantity=='0'){
+			uni.showToast({
+				title: '请正确填写订单后再提交',
+				icon: 'none'
+			});
+			return
+		}
 		if (form.value.usageQuantity > remainingQuantity.value) {
 			uni.showToast({
 				title: '输入的数量不能大于剩余数量',
 				icon: "none"
 			});
 		} else {
-			if(checkboxValue.value[0]) {
+			if (checkboxValue.value[0]) {
 				uni.showLoading({
 					title: '订单提交中',
 					mask: true
@@ -302,16 +329,16 @@
 			}
 		}
 	}
-	
+
 	// 跳转协议
-	const goProtocol = (num: number) => {
+	const goProtocol = (num : number) => {
 		uni.navigateTo({
 			url: '/pagesOther/src/protocol/index?id=' + num
 		});
 	}
 
-	onLoad((e: any) => {
-		unitPrice.value = ((e.amt - 2000)/1000).toFixed(2)
+	onLoad((e : any) => {
+		unitPrice.value = ((e.amt - 2000) / 1000).toFixed(2)
 		form.value.productUnitPrice = unitPrice.value
 		if (userInfo.userType === 3) {
 			form.value.sellerType = 1
@@ -381,12 +408,12 @@
 
 		.protocol {
 			margin: 50rpx 0;
-			
-			view{
+
+			view {
 				font-size: $text2;
 				color: $sbgcolor5;
-				
-				text{
+
+				text {
 					color: $sbgcolor4;
 					font-weight: bold;
 				}

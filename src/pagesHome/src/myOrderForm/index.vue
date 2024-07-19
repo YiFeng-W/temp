@@ -4,7 +4,7 @@ import { onLoad, onShow } from '@dcloudio/uni-app'
 import { cancelQrOrder, getOrderQrcode, getQrOrderList } from '@/api/pagesMy/myOrderForm'
 import { getFontSize, getUserInfo, setQRCode } from '@/utils/local-storage'
 import voidPrompt from '@/components/void-prompt/index.vue'
-
+import dayjs from 'dayjs'
 // 根字体大小
 const baseFontSize = ref<number>(1)
 // 用户类型
@@ -133,6 +133,8 @@ const getOrderList = async () => {
     tradeStatus: tabIndex.value,
     buyerOrSeller: orderType.value === '1' ? 2 : 1,
     type: type.value,
+    startDate:startDate.value,
+    endDate:endDate.value
   }
   try {
     const res: any = await getQrOrderList(data)
@@ -268,9 +270,71 @@ const monthlyList = ref<any>([
     name: '6个月内',
   },
 ])
+// 按月选择
+const quickChooseParams = ref<any>()
+const quickChooseOptions = ref<any>([
+{
+	code: 'today',
+	name: '当日',
+}, {
+	code: 'yesterday',
+	name: '昨日',
+}, {
+	code: 'week',
+	name: '本周',
+}, {
+	code: 'lastWeek',
+	name: '上周',
+}, {
+	code: 'month',
+	name: '本月',
+}, {
+	code: 'year',
+	name: '今年',
+}]
+)
+  
+const changeQuickParams = (id:any)=>{
+  // 根据传入值，设置开始时间和结束时间
+  if(id === 'today'){
+    startDate.value =  dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value =  dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+  }else if(id === 'yesterday'){
+    startDate.value = dayjs(new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }else if(id === 'week'){
+    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay()-1)*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() + (7 - new Date().getDay())*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }else if(id === 'lastWeek'){
+    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay() + 6)*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay())*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }else if(id === 'month'){
+    startDate.value =dayjs( new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleDateString()).format('YYYY-MM-DD')
+  }else if(id === 'year'){
+    startDate.value = dayjs(new Date(new Date().getFullYear(), 0, 1).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getFullYear(), 11, 31).toLocaleDateString()).format('YYYY-MM-DD')
+	} 
+  quickChooseParams.value = id
+	isMonthly.value = null
+}
 // 选中月
 const changeMonthly = (id: any) => {
+    // 根据传入值，设置开始时间和结束时间，格式化时间yyyy-MM-dd
+  if (id === 0) {
+    startDate.value = dayjs( new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 1) {
+    startDate.value = dayjs( new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 2) {
+    startDate.value = dayjs( new Date(new Date().getTime() - 180 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+  }
   isMonthly.value = id
+  quickChooseParams.value = null
 }
 
 // 开始时间
@@ -283,7 +347,25 @@ const showCalendar = ref<boolean>(false)
 const selectDate = (id: any, date: any) => {
   showCalendar.value = true
 }
-
+const confirmDateRange = (e:any) => {
+  startDate.value = e[0]
+  endDate.value = e[e.length-1]
+  isMonthly.value = null
+  quickChooseParams.value = null
+  showCalendar.value = false
+};
+// 重置时间参数
+const resetDateParams  = ()=>{
+  startDate.value = '起始时间'
+  endDate.value = '终止时间'
+  isMonthly.value = null
+  quickChooseParams.value = null
+}
+// 确定搜索
+const confirDateParams = ()=>{
+	getOrderList()
+	showPopup.value = false
+}
 // 跳转详情
 const goDetails = (id: any) => {
   console.log(123, userType, orderType.value)
@@ -324,8 +406,6 @@ const goInvoice = () => {
 }
 
 onLoad((e: any) => {
-  console.log('e', e);
-  
   orderType.value = e.type
   judgeUser()
 })
@@ -364,12 +444,15 @@ onShow(() => {
       >
         <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
           <view class="tit flex-row justify-between items-center">
-            <view v-if="orderType === 1" style="font-weight: bold;">
+          <!--  <view v-if="orderType === 1" style="font-weight: bold;">
               {{ item.buyerName }}
             </view>
             <view v-else style="font-weight: bold;">
               {{ item.sellerName }}
-            </view>
+            </view> -->
+			<view  style="font-weight: bold;">
+			  {{ item.buyerName }}
+			</view>
             <view :style="{ color: retColor(item.checkStatus) }">
               {{ retType(item.checkStatus) }}
             </view>
@@ -393,23 +476,29 @@ onShow(() => {
                   <view class="text1">
                     重量：{{ item.productCount }}
                   </view>
-                  <view v-if="userType === 2" class="text2">
+                 <!-- <view v-if="userType === 2" class="text2">
                     公斤
                   </view>
                   <view v-else class="text2">
                     吨
-                  </view>
+                  </view> -->
+				  <view  class="text2">
+				    kg
+				  </view>
                 </view>
                 <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     收胶价：{{ item.productUnitPrice }}
                   </view>
-                  <view v-if="userType === 2" class="text2">
+               <!--   <view v-if="userType === 2" class="text2">
                     元/公斤
                   </view>
                   <view v-else class="text2">
                     元/吨
-                  </view>
+                  </view> -->
+				  <view  class="text2">
+				    元/kg
+				  </view>
                 </view>
                 <view class="text3">
                   订单金额 ¥ {{ item.productTotalPrice }} 元
@@ -488,7 +577,15 @@ onShow(() => {
             {{ item.name }}
           </view>
         </view>
-        <view class="custom flex-row justify-between items-center">
+		<view class="monthly" style="display: flex;align-items: center;justify-content: flex-start;flex-wrap: wrap;">
+			<view
+			  v-for="item in quickChooseOptions" :key="item.code" :class="quickChooseParams === item.code ? userContent.smbtn : 'mbtn'"
+			  @click="changeQuickParams(item.code)"
+			>
+			  {{ item.name }}
+			</view>
+		</view>
+        <view class="custom flex-row justify-between items-center noswap">
           <view class="date" @click="selectDate(1, startDate)">
             {{ startDate }}
           </view>
@@ -497,12 +594,12 @@ onShow(() => {
             {{ endDate }}
           </view>
         </view>
-        <up-calendar :show="showCalendar" @close="showCalendar = false" />
+        <up-calendar :show="showCalendar" mode="range" @confirm="confirmDateRange" @close="showCalendar = false" />
         <view class="function flex-row justify-between items-center">
-          <view class="justify-center items-center" :class="userContent.czBtn">
+          <view class="justify-center items-center" :class="userContent.czBtn" @click="resetDateParams">
             重置
           </view>
-          <view class="justify-center items-center" :class="userContent.qdBtn">
+          <view class="justify-center items-center" @click="confirDateParams"  :class="userContent.qdBtn">
             确定
           </view>
         </view>
