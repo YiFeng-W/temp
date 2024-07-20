@@ -7,6 +7,7 @@ import {
   getStationInfoByUser,
   uploadPayImage,
   confrimStatus,
+  updateUnitPrice
 } from '@/api/pagesHome/iWantToSellGoods/index'
 
 // 根字体大小
@@ -157,10 +158,8 @@ const checkboxChange = (e: any) => {
 const orderId = ref('')
 const confrim = () => {
   if (xyValue.value) {
-    uploadPayImage({
-      orderId: orderId.value,
-      sourceType: 1,
-      status: 3
+    confrimStatus({
+      orderId: orderId.value
     }).then((res: any) => {
       console.log(res)
       if (res.success) {
@@ -193,6 +192,35 @@ const confrimPayStatus = () => {
   }
 }
 
+const price = ref<any>()
+const createOrder = async () => {
+  if (xyValue.value) {
+    const res: any = await updateUnitPrice({
+      orderId: form.value.id,
+      unitPrice: price.value
+    })
+    if (res.success) {
+      getForm()
+    } else {
+      uni.showToast({
+        title: res.msg,
+        icon: 'none',
+      })
+    }
+  } else {
+    uni.showToast({
+      title: '请勾选并同意协议',
+      icon: 'none',
+    })
+  }
+}
+
+const goPay = () => {
+  uni.navigateTo({
+    url: `/pagesHome/src/myOrderForm/payVoucher?orderId=${form.value.id}`,
+  })
+}
+
 onShow(() => {
   baseFontSize.value = getFontSize()
   getForm()
@@ -219,6 +247,10 @@ onLoad((e: any) => {
         <view class="row flex-row justify-between items-center">
           <view>胶厂收胶价</view>
           <view>{{ form.qrcodeOrderVO.productUnitPrice }}元/吨</view>
+        </view>
+        <view v-if="buyerOrSeller == 1 && form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -2" class="row flex-row justify-between items-center">
+          <view>修改胶厂收胶价(元/吨)</view>
+          <input class="input" placeholder="请输入收胶价格" v-model="price" />
         </view>
         <view class="row flex-row justify-between items-center">
           <view>橡胶类型</view>
@@ -268,32 +300,66 @@ onLoad((e: any) => {
           <view>{{ jzInfo.type === 1 ? '国营' : jzInfo.type === 2 ? '私人' : '代理' }}</view>
         </view>
       </view>
-      <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == 1"  class="function">
-        <view class="agreement flex-row justify-center items-center">
-          <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
-            <up-checkbox :name="true" />
-          </up-checkbox-group>
-          <view>
-            阅读并同意
-            <text>《智京数贸通农产品交易协议》</text>
+
+      <view v-if="buyerOrSeller == 3 ">
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -1"  class="function">
+          <view class="agreement flex-row justify-center items-center">
+            <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
+              <up-checkbox :name="true" />
+            </up-checkbox-group>
+            <view>
+              阅读并同意
+              <text>《智京数贸通农产品交易协议》</text>
+            </view>
+          </view>
+          <view class="btn justify-center" :class="userContent.backcolor" @click="confrim">
+            确认交易
           </view>
         </view>
-        <view class="btn justify-center" :class="userContent.backcolor" @click="confrim">
-          确认交易
+        <view v-if="form.payStatus == 1 && form.orderRubberExtendVO.checkStatus == 2"  class="function">
+          <view class="agreement flex-row justify-center items-center">
+            <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
+              <up-checkbox :name="true" />
+            </up-checkbox-group>
+            <view>
+              阅读并同意
+              <text>《智京数贸通农产品交易协议》</text>
+            </view>
+          </view>
+          <view class="btn justify-center" :class="userContent.backcolor" @click="confrimPayStatus">
+            确认收款
+          </view>
         </view>
       </view>
-      <view v-if="form.payStatus == 1 && form.orderRubberExtendVO.checkStatus == 2"  class="function">
-        <view class="agreement flex-row justify-center items-center">
-          <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
-            <up-checkbox :name="true" />
-          </up-checkbox-group>
-          <view>
-            阅读并同意
-            <text>《智京数贸通农产品交易协议》</text>
+
+      <view v-if="buyerOrSeller == 1">
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -2"  class="function">
+          <view class="agreement flex-row justify-center items-center">
+            <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
+              <up-checkbox :name="true" />
+            </up-checkbox-group>
+            <view>
+              阅读并同意
+              <text>《智京数贸通农产品交易协议》</text>
+            </view>
+          </view>
+          <view class="btn justify-center" :class="userContent.backcolor" @click="createOrder">
+            生成交易
           </view>
         </view>
-        <view class="btn justify-center" :class="userContent.backcolor" @click="confrimPayStatus">
-          确认收款
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == 1"  class="function">
+          <view class="agreement flex-row justify-center items-center">
+            <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
+              <up-checkbox :name="true" />
+            </up-checkbox-group>
+            <view>
+              阅读并同意
+              <text>《智京数贸通农产品交易协议》</text>
+            </view>
+          </view>
+          <view class="btn justify-center" :class="userContent.backcolor" @click="goPay">
+            确认支付
+          </view>
         </view>
       </view>
     </view>
@@ -324,6 +390,9 @@ onLoad((e: any) => {
       font-size: $text2;
       color: $sbgcolor4;
       line-height: $text2;
+      .input {
+        text-align: right;
+      }
     }
   }
 

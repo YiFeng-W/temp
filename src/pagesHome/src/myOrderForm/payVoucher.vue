@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getFontSize, getUserInfo } from '@/utils/local-storage'
 import SmtUpload from '@/components/smt-upload/index.vue'
+import { uploadPayImage } from '@/api/pagesHome/iWantToSellGoods/index'
 
 // 根字体大小
 const baseFontSize = ref<number>(1)
@@ -27,6 +28,30 @@ const newFileList = (a: any, b: any) => {
   }
 }
 
+const pay = async () => {
+  if (productImage.value.length == 0) {
+    uni.showToast({
+      title: '请上传凭证',
+      icon: 'none',
+    })
+    return
+  }
+  const res: any = await uploadPayImage({
+    orderId: orderId.value,
+    payImage: productImage.value,
+    sourceType: 1,
+    status: 2
+  })
+  if (res.success) {
+    uni.navigateBack()
+  } else {
+    uni.showToast({
+      title: res.msg,
+      icon: 'none',
+    })
+  }
+}
+
 onLoad((e: any) => {
   baseFontSize.value = getFontSize()
   orderId.value = e.orderId
@@ -44,7 +69,7 @@ onLoad((e: any) => {
         <SmtUpload :file-list="fileList" :max-count="10" :up-style="upStyle" @new-file-list="newFileList" />
       </view>
     </view>
-    <view class="btn">
+    <view class="btn" @click="pay">
       提交
     </view>
   </view>
@@ -71,5 +96,10 @@ onLoad((e: any) => {
 .btn {
   padding: 24rpx 0;
   width: calc(100% - 48rpx);
+  text-align: center;
+  background-color: #FFA020;
+  margin-left: 24rpx;
+  border-radius: 60rpx;
+  color: #ffffff;
 }
 </style>

@@ -277,6 +277,11 @@
 
 	// 确定提交订单
 	const payEnd = async () => {
+		uni.showToast({
+			title: '敬请期待',
+			icon: 'none'
+		});
+		return
 		uni.showLoading({
 			title: '提交中',
 			mask: true

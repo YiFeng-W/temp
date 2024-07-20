@@ -35,7 +35,7 @@ const judgeUser = () => {
     userContent.value.smbtn = 'smbtn1'
     userContent.value.czBtn = 'btna1'
     userContent.value.qdBtn = 'btna2'
-    tabList.value = [{ name: '全部' }, { name: '待支付' }, { name: '待收款' }, { name: '已取消' }]
+    tabList.value = [{ name: '全部', value: '' }, { name: '待支付', value: 1 }, { name: '待收款', value: 2 }, { name: '已取消', value: 4 }]
   }
   else if (userType === 3) {
     userContent.value.screen = '../../../static/image/screen2.png'
@@ -44,10 +44,10 @@ const judgeUser = () => {
     userContent.value.czBtn = 'btnb1'
     userContent.value.qdBtn = 'btnb2'
     if (orderType.value === '1') {
-      tabList.value = [{ name: '全部' }, { name: '待确认' }, { name: '待收款' }, { name: '已取消' }]
+      tabList.value = [{ name: '全部', value: ''  }, { name: '待确认', value: -1  }, { name: '待收款', value: 2  }, { name: '已取消', value: 4 }]
     }
     else {
-      tabList.value = [{ name: '全部' }, { name: '待付款' }, { name: '已支付' }, { name: '已取消' }]
+      tabList.value = [{ name: '全部', value: ''  }, { name: '待付款', value: 1 }, { name: '已支付', value: 2  }, { name: '已取消', value: 4 }]
     }
   }
   else if (userType === 1) {
@@ -56,7 +56,7 @@ const judgeUser = () => {
     userContent.value.smbtn = 'smbtn3'
     userContent.value.czBtn = 'btnc1'
     userContent.value.qdBtn = 'btnc2'
-    tabList.value = [{ name: '全部' }, { name: '待交易' }, { name: '待支付' }, { name: '已取消' }]
+    tabList.value = [{ name: '全部', value: '' }, { name: '待交易', value: -2 }, { name: '待支付', value: 1 }, { name: '已取消', value: 4 }]
   }
 }
 
@@ -188,6 +188,11 @@ const changeTab = (e: any) => {
   else {
     tabIndex.value = null
   }
+  if (userType == 1) {
+    tabIndex.value = e.value
+  }
+  // tabIndex.value = e.value
+  
   form.value = []
   page.value = 1
   getOrderList()
@@ -346,9 +351,9 @@ const changeMonthly = (id: any) => {
 }
 
 // 开始时间
-const startDate = ref<any>('起始时间')
+const startDate = ref<any>('')
 // 结束时间
-const endDate = ref<any>('终止时间')
+const endDate = ref<any>('')
 // 选择时间
 const showCalendar = ref<boolean>(false)
 // 开始选择时间
@@ -364,8 +369,8 @@ const confirmDateRange = (e:any) => {
 };
 // 重置时间参数
 const resetDateParams  = ()=>{
-  startDate.value = '起始时间'
-  endDate.value = '终止时间'
+  startDate.value = ''
+  endDate.value = ''
   isMonthly.value = null
   quickChooseParams.value = null
 }
@@ -607,14 +612,14 @@ onShow(() => {
 		</view>
         <view class="custom flex-row justify-between items-center noswap">
           <view class="date" @click="selectDate(1, startDate)">
-            {{ startDate }}
+            {{ startDate || '起始时间' }}
           </view>
           <view class="to" />
           <view class="date" @click="selectDate(2, startDate)">
-            {{ endDate }}
+            {{ endDate || '结束时间' }}
           </view>
         </view>
-        <up-calendar :show="showCalendar" mode="range" @confirm="confirmDateRange" @close="showCalendar = false" />
+        <up-calendar :minDate="new Date('2024-01-01')" :maxDate="new Date()" :monthNum="12" :show="showCalendar" mode="range" @confirm="confirmDateRange" @close="showCalendar = false" />
         <view class="function flex-row justify-between items-center">
           <view class="justify-center items-center" :class="userContent.czBtn" @click="resetDateParams">
             重置

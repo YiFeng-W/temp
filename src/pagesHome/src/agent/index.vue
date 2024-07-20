@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
-import { cancelQrOrder, getOrderQrcode, getQrOrderList } from '@/api/pagesMy/myOrderForm'
+import { getProxyOrderList } from '@/api/pagesMy/myOrderForm'
 import { getFontSize, getUserInfo, setQRCode } from '@/utils/local-storage'
 import voidPrompt from '@/components/void-prompt/index.vue'
 
@@ -13,8 +13,8 @@ const userType = getUserInfo().buyerOrSeller
 const orderType = ref<any>()
 // 关键字
 const keyWord = ref<string>()
-// tab列表
-const tabList = ref<any>([{name: '全部'}, { name: '待结算' }, { name: '审核中' }, { name: '已结算' }, { name: '已驳回' }])
+// tab列表 value值是错误的，功能没完善，测试数据用的
+const tabList = ref<any>([{name: '待结算', value: 1}, { name: '已结算', value: 0 }])
 // 用户使用内容
 const userContent = ref<any>({
   screen: '',
@@ -35,27 +35,9 @@ const have = (value: any) => {
 // 返回对应订单状态
 const retType = (xj: any) => {
   if (xj === 1) {
-    if (userType.value === 3) {
-      return '待胶厂支付'
-    }
-    else {
-      return tabList.value[1].name
-    }
-  }
-  else if (xj === 2) {
-    return tabList.value[2].name
-  }
-  else if (xj === 3) {
-    return '已完成'
-  }
-  else if (xj === -1) {
-    return '待确认'
-  }
-  else if (xj === -2) {
-    return '待交易'
-  }
-  else {
-    return '已取消'
+    return '已结算'
+  } else {
+    return '待结算'
   }
 }
 // 返回对应订单颜色
@@ -104,7 +86,7 @@ const getOrderList = async () => {
     type: type.value,
   }
   try {
-    const res: any = await getQrOrderList(data)
+    const res: any = await getProxyOrderList(data)
     if (res.success) {
       totalPage.value = Math.ceil(res.data.total / pageSize.value)
       res.data.records.forEach((item: any) => {
@@ -262,7 +244,7 @@ onShow(() => {
               {{ item.sellerName }}
             </view>
             <view :style="{ color: retColor(item.checkStatus) }">
-              {{ retType(item.checkStatus) }}
+              {{ retType(item.payStatus) }}
             </view>
           </view>
           <view class="content">
@@ -308,7 +290,7 @@ onShow(() => {
               </view>
             </view>
             <view class="function flex-row justify-end">
-              <view class="btn2" @click="goDetails(item.id)">
+              <view class="btn2">
                 申请代理收益
               </view>
             </view>

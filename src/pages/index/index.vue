@@ -6,14 +6,11 @@ import { getAuthInfo, getFontSize, getToken, getUserInfo } from '@/utils/local-s
 import {
   bindSeller,
   getDetailForArticles,
-  getProductPriceTrendDetail,
   getRubberStationDetail,
   getRubberStationToatl,
   getRU2409,
-  getRubberPrice,
   getFactoryInfo,
   getTodayOrdersInfo,
-  getSetPriceJC,
 } from '@/api/pages/index'
 
 // 根字体大小
@@ -84,6 +81,7 @@ const getPrice = async () => {
     if (res.success) {
       console.log(res);
       newPrice.value = Number(res.data.curData.price);
+      uni.setStorageSync('marketData', res.data.marketData)
       gnList.value[3].path
         = `/pagesHome/src/iWantToSellGoods/index?amt=${newPrice.value}`
     }
@@ -303,6 +301,9 @@ const scanTheCode = () => {
               icon: 'none',
               duration: 3000,
             })
+            uni.navigateTo({
+              url: `/pagesMy/src/userInfo/authenticationInfoview?id=${obj[1]}`,
+            })
           }
           else {
             uni.showToast({
@@ -517,7 +518,7 @@ onShow(() => {
             <view>{{ item.name }}</view>
           </view>
         </view>
-        <!-- <view class="titr flex-row justify-between items-center">
+        <view class="titr flex-row justify-between items-center">
           <view class="flex-row items-center">
             <view class="label"></view>
             <view class="zx">资讯</view>
@@ -526,8 +527,8 @@ onShow(() => {
             <view class="more">查看更多</view>
             <up-icon name="arrow-right" color="#2BAE85" size="24rpx"></up-icon>
           </view>
-        </view> -->
-        <!-- <view class="box info">
+        </view>
+        <view class="box info">
           <view class="row flex-row justify-between" v-for="(item, id) in newsList" :key="id"
             @click="goNewsDetails(item)">
             <image :src="item.imagePath" mode="scaleToFill"></image>
@@ -539,7 +540,7 @@ onShow(() => {
               </view>
             </view>
           </view>
-        </view> -->
+        </view>
       </view>
     </view>
   </view>

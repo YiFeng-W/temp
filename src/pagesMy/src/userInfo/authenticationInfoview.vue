@@ -3,41 +3,32 @@
 	<view class="padbg">
 		<view class="pd">
 			<view class="box">
-				<view class="img flex-row justify-between">
-					<image @click="largeImg(authInfo.idcardBackPath)" :src="authInfo.idcardBackPath" mode="aspectFill"></image>
-					<image @click="largeImg(authInfo.idcardFrontPath)" :src="authInfo.idcardFrontPath" mode="aspectFill"></image>
-				</view>
 				<view class="row1 flex-row justify-between">
 					<view>姓名</view>
-					<view class="text">{{authInfo.name}}</view>
+					<view class="text">{{authInfo.nickName}}</view>
 				</view>
 				<view class="row1 flex-row justify-between">
-					<view>性别</view>
-					<view class="text">{{authInfo.sex===1?'男':'女'}}</view>
+					<view>联系电话</view>
+					<view class="text">{{authInfo.phoneNumber}}</view>
 				</view>
 				<view class="row1 flex-row justify-between">
-					<view>民族</view>
-					<view class="text">{{authInfo.ethnicity}}</view>
+					<view>自产登记状态</view>
+					<view class="text" v-if="authInfo.certAuthStatus == 0">待审核</view>
+					<view class="text" v-if="authInfo.certAuthStatus == 1">通过</view>
+					<view class="text" v-if="authInfo.certAuthStatus == 2">已撤销</view>
+					<view class="text" v-if="authInfo.certAuthStatus == -1">未通过</view>
 				</view>
 				<view class="row1 flex-row justify-between">
-					<view>出生日期</view>
-					<view class="text">{{authInfo.birthday}}</view>
+					<view>种植承包面积</view>
+					<view class="text">{{authInfo.plantArea}}亩</view>
 				</view>
 				<view class="row1 flex-row justify-between">
-					<view>住址</view>
-					<view class="text">{{authInfo.address}}</view>
+					<view>可销售数量</view>
+					<view class="text">{{authInfo.saleQuantity}}公斤</view>
 				</view>
 				<view class="row1 flex-row justify-between">
-					<view>身份证号码</view>
-					<view class="text">{{authInfo.idcardNumber}}</view>
-				</view>
-				<view class="row1 flex-row justify-between">
-					<view>签发机关</view>
-					<view class="text">{{authInfo.issueAuthority}}</view>
-				</view>
-				<view class="row1 flex-row justify-between">
-					<view>有效期</view>
-					<view class="text">{{authInfo.validStartDate}} 至 {{authInfo.validEndDate}}</view>
+					<view>剩余数量</view>
+					<view class="text">{{authInfo.remainQuantity}}公斤</view>
 				</view>
 			</view>
 		</view>
@@ -47,12 +38,14 @@
 <script lang="ts" setup>
 	import { ref } from 'vue'
 	import { onLoad } from '@dcloudio/uni-app'
+	import { getUserInfo } from '@/api/pagesMy/userInfo'
 	import { getFontSize, getAuthInfo } from '@/utils/local-storage'
 	
 	// 基础字号
 	const baseFontSize = ref<number>(1)
 	// 认证信息
-	const authInfo = getAuthInfo()
+	// const authInfo = getAuthInfo()
+	const authInfo = ref<any>({})
 	
 	// 判断是否为空
 	const have = (e : any) => {
@@ -66,9 +59,13 @@
 		})
 	}
 	
-	onLoad((e) => {
-		id.value = '1810919904085340162' || e.id
+	onLoad((e: any) => {
 		baseFontSize.value = getFontSize()
+		getUserInfo({
+			sellerId: e.id
+		}).then(res => {
+			authInfo.value = res.data
+		})
 	})
 </script>
 
@@ -97,7 +94,7 @@
 			border-bottom: 2rpx solid $sbgcolor7;
 			
 			.text {
-				width: 452rpx;
+				width: 400rpx;
 				text-align: end;
 			}
 		}

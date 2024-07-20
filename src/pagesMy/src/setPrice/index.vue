@@ -58,12 +58,14 @@ const initSure = async () => {
     if (roleFlag.value == 1) { // 胶厂
       res = await getSetPriceJC({
         id: stationId.value,
+        gommuresPrice: stationPrice.value,
         rubberPrice: stationPrice.value,
       });
     } else {
       res = await getSetPrice({
         id: stationId.value,
         rubberPrice: stationPrice.value,
+        gommuresPrice: stationPrice.value,
       });
     }
     

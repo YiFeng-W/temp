@@ -233,15 +233,15 @@
           }
         },
         {
-          "path": "src/userInfo/improveInformationview",
-          "style": {
-            "navigationBarTitleText": "胶农信息"
-          }
-        },
-        {
           "path": "src/userInfo/authenticationInfo",
           "style": {
             "navigationBarTitleText": "个人资料"
+          }
+        },
+        {
+          "path": "src/userInfo/authenticationInfoview",
+          "style": {
+            "navigationBarTitleText": "胶农信息"
           }
         },
         {

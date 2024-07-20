@@ -20,7 +20,6 @@
 import { ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { getFontSize } from '@/utils/local-storage';
-import ej from './response.json'
 const echarts = require('../../static/js/echarts.min')
 const echartsData = ref({
 	xData: [],
@@ -32,7 +31,8 @@ const baseFontSize = ref<number>(1)
 
 onLoad(() => {
 	baseFontSize.value = getFontSize()
-	ej.marketData.marketData.forEach(item => {
+	const marketData = uni.getStorageSync('marketData')	
+	marketData.marketData.forEach(item => {
 		const x = item.split(',')[1]
 		const y = item.split(',')[3]
 		echartsData.value.xData.push(x.substring(5))

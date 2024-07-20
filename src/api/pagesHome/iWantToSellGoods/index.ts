@@ -73,3 +73,8 @@ export const getStationInfoByUser = (data: object) => {
 export const confrimStatus = (data: { orderId: string }) => {
   return request('/user/orderRubberExtand/v1/updateCheckStatus', 'POST', data)
 }
+
+
+export const updateUnitPrice = (data: object) => {
+  return request('/user/orderRubberExtand/v1/updateUnitPrice', 'POST', data)
+}

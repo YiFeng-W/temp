@@ -24,3 +24,8 @@ export const addAuthCompany = (data: object) => {
 export const generateIdCardQrCode = () => {
     return request("/user/user/v1/generateIdCardQrCode", 'POST')
 }
+
+// 根据ID获取胶农信息
+export const getUserInfo = (data: object) => {
+    return request("/user/bnRubberStation/v1/getUserInfo", 'POST',  data)
+}
