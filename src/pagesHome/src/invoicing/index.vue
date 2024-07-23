@@ -161,7 +161,7 @@
 				page.value--
 				uni.hideLoading();
 			}
-			if (totalPage.value === page.value) {
+			if (totalPage.value === page.value && page.value !== 1) {
 				moreStatus.value = 'noMore'
 				showMore.value = true
 			} else {

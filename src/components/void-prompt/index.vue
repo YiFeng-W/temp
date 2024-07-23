@@ -9,11 +9,13 @@
 
 <style lang="scss" scoped>
 	.void{
-		padding: 286rpx;
+		padding: 286rpx 0;
+		text-align: center;
 		
 		image{
 			width: 200rpx;
 			height: 200rpx;
+			margin-bottom: 20rpx;
 		}
 		
 		text{

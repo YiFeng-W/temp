@@ -17,7 +17,11 @@
 				</view>
 			</view>
 		</view>
-		<view class="btn justify-center items-center" @click="changePassword">确认修改</view>
+		<view class="btn justify-center items-center" :class="{
+			'jn_color-bg': roleFlag === 2,
+			'jc_color-bg': roleFlag === 1,
+			'jz_color-bg': roleFlag === 3,
+		}" @click="changePassword">确认修改</view>
 	</view>
 </template>
 
@@ -29,6 +33,7 @@
 
 	// 根字体大小
 	const baseFontSize = ref<number>(1)
+	const roleFlag = ref<any>()
 
 	// 当前密码
 	const nowpw = ref<string>('')
@@ -84,6 +89,7 @@
 
 	onShow(() => {
 		baseFontSize.value = getFontSize()
+		roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
 	})
 </script>
 
@@ -115,7 +121,6 @@
 	.btn {
 		padding: 24rpx 0;
 		width: calc(100% - 48rpx);
-		background-color: $sbgcolor1;
 		border-radius: $radius2;
 		font-size: $text5;
 		color: #FFFFFF;

@@ -50,7 +50,13 @@
 					</view>
 				</view>
 			</view>
-			<view class="btn justify-center items-center" @click="go">查看全部收款</view>
+			<view class="btn justify-center items-center"
+				:class="{
+					'jn_color-bg': roleFlag === 2,
+					'jc_color-bg': roleFlag === 1,
+					'jz_color-bg': roleFlag === 3,
+				}"
+			@click="go">查看全部收款</view>
 		</view>
 	</view>
 </template>
@@ -63,10 +69,12 @@
 
 	const summaryType = ref<string>() // 1-收入 2-支出
 	const rubberUserType = ref<string>() // 1-胶站用户 2-胶厂用户
+	const roleFlag = ref<any>()
 
 	onLoad((options: any) => {
 		summaryType.value = options.summaryType
-		rubberUserType.value = uni.getStorageSync('userInfo').buyerOrSeller == 1 ? '2' : '1'
+		rubberUserType.value = uni.getStorageSync('userInfo').buyerOrSeller == 1 ? '2' : '1';
+		roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
 
 		getOrderSummary()
 	})
@@ -184,7 +192,6 @@
 		.btn{
 			padding: 24rpx 0;
 			margin-top: 48rpx;
-			background-color: $sbgcolor1;
 			border-radius: $radius2;
 			font-size: $text3;
 			color: #FFFFFF;

@@ -1,76 +1,104 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
+import { getAuthInfo, getFontSize, getUserInfo } from '@/utils/local-storage'
+import { getRubberStationDetail } from '@/api/pages/index'
+
+// 根字体大小
+const baseFontSize = ref<number>(1)
+const stationInfo = ref<any>()
+const roleFlag = ref<any>()
+
+const getStationDetail = async () => {
+  try {
+    const res: any = await getRubberStationDetail()
+    if (res.success) {
+      stationInfo.value = res.data
+    }
+    else {
+      uni.showToast({
+        title: res.msg,
+        icon: 'none',
+      })
+    }
+  }
+  catch (e) {
+    // TODO handle the exception
+  }
+}
+
+onLoad(() => {
+  getStationDetail()
+  roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
+})
+onShow(() => {
+  baseFontSize.value = getFontSize()
+  roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
+})
+// 获取胶站详情
+
+// 确认返回
+const returnBack = async () => {
+  uni.navigateBack()
+}
+</script>
+
 <template>
-  <page-meta :root-font-size="`${baseFontSize}px`"></page-meta>
+  <page-meta :root-font-size="`${baseFontSize}px`" />
   <view class="box padbg">
     <view class="info">
       <view class="info_item">
         <view>站点名称</view>
-        <view>{{ stationInfo.name }}</view>
+        <view>{{ stationInfo && stationInfo.name }}</view>
       </view>
       <view class="info_item">
         <view>站点类型</view>
-        <view v-if="stationInfo.type == 1">国营</view>
-        <view v-else-if="stationInfo.type == 2">私营</view>
-        <view v-else>代理</view>
+        <view v-if="stationInfo && stationInfo.type == 1">
+          国营
+        </view>
+        <view v-else-if="stationInfo && stationInfo.type == 2">
+          私营
+        </view>
+        <view v-else>
+          代理
+        </view>
       </view>
       <view class="info_item">
         <view>站点编号</view>
-        <view>{{ stationInfo.code }}</view>
+        <view>{{ stationInfo && stationInfo.code }}</view>
       </view>
       <view class="info_item">
         <view>联系人</view>
-        <view>{{ stationInfo.userName }}</view>
+        <view>{{ stationInfo && stationInfo.userName }}</view>
       </view>
       <view class="info_item">
         <view>联系电话</view>
-        <view>{{ stationInfo.phoneNumber }}</view>
+        <view>{{ stationInfo && stationInfo.phoneNumber }}</view>
       </view>
       <view class="info_item">
-        <view class="title">详细地址</view>
-        <view class="tip">{{ stationInfo.detailAddress }}</view>
+        <view class="title">
+          详细地址
+        </view>
+        <view class="tip">
+          {{ stationInfo && stationInfo.detailAddress }}
+        </view>
       </view>
     </view>
     <view class="sure">
-      <view class="lock" @click="returnBack">确认</view>
+      <view
+        v-if="roleFlag === 1"
+        class="lock chang" @click="returnBack"
+      >
+        确认
+      </view>
+      <view
+        v-else class="lock" @click="returnBack"
+      >
+        确认
+      </view>
     </view>
   </view>
 </template>
-
-<script lang="ts" setup>
-import { ref } from "vue";
-import { onLoad, onShow } from "@dcloudio/uni-app";
-import { getUserInfo, getAuthInfo, getFontSize } from "@/utils/local-storage";
-import { getRubberStationDetail } from "@/api/pages/index";
-
-// 根字体大小
-const baseFontSize = ref<number>(1);
-const stationInfo = ref<any>();
-onLoad(() => {
-  getStationDetail();
-});
-onShow(() => {
-  baseFontSize.value = getFontSize();
-});
-// 获取胶站详情
-const getStationDetail = async () => {
-  try {
-    const res: any = await getRubberStationDetail();
-    if (res.success) {
-      stationInfo.value = res.data;
-    } else {
-      uni.showToast({
-        title: res.msg,
-        icon: "none",
-      });
-    }
-  } catch (e) {
-    //TODO handle the exception
-  }
-};
-// 确认返回
-const returnBack = async () => {
-  uni.navigateBack();
-};
-</script>
 
 <style lang="scss" scoped>
 .box {
@@ -114,6 +142,9 @@ const returnBack = async () => {
       line-height: 80rpx;
       position: absolute;
       bottom: 100rpx;
+    }
+    .chang {
+      background-color: #ffa020;
     }
   }
 }

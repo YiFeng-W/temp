@@ -7,6 +7,7 @@ import store from './store'
 import { shareMixin } from '~/utils/share'
 
 import 'uno.css'
+import './styles/common.scss'
 import '~/styles/flex.css'
 
 export function createApp() {

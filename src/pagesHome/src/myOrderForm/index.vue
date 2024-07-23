@@ -49,6 +49,9 @@ const judgeUser = () => {
     else {
       tabList.value = [{ name: '全部', value: '' }, { name: '待付款', value: 1 }, { name: '已支付', value: 2 }, { name: '已取消', value: 4 }]
     }
+    uni.setNavigationBarTitle({
+      title: orderType.value === '1' ? '售胶订单' : '收胶订单',
+    })
   }
   else if (userType === 1) {
     userContent.value.screen = '../../../static/image/screen3.png'
@@ -57,6 +60,9 @@ const judgeUser = () => {
     userContent.value.czBtn = 'btnc1'
     userContent.value.qdBtn = 'btnc2'
     tabList.value = [{ name: '全部', value: '' }, { name: '待交易', value: -2 }, { name: '待支付', value: 1 }, { name: '已取消', value: 4 }]
+    uni.setNavigationBarTitle({
+      title: orderType.value === '1' ? '售胶订单' : '收胶订单',
+    })
   }
 }
 
@@ -503,14 +509,14 @@ onShow(() => {
                 <view class="text1">
                   类型：{{ item.rubberType === 1 ? '胶水' : '胶块' }}
                 </view>
-                <!-- <view class="mt flex-row justify-between items-center">
+                <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     干含比：{{ item.dryWater }}
                   </view>
                   <view class="text2">
                     %
                   </view>
-                </view> -->
+                </view>
                 <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     重量：{{ item.productCount }}

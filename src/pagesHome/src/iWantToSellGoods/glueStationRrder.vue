@@ -64,6 +64,7 @@ const cancelName = () => {
 const confirmName = (e: any) => {
   form.value.factoryId = e.value[0].id
   rubberFactoryName.value = e.value[0].name
+  form.value.productUnitPrice = e.value[0].rubberPrice
   showName.value = false
 }
 // 获取胶厂
@@ -114,10 +115,10 @@ const confirmType = (e: any) => {
   getNumber()
   if (e.value[0].id == 2) {
     form.value.dryWater = 100
-  } else {
+  }
+  else {
     form.value.dryWater = ''
   }
-  
 }
 
 // 获取剩余数量
@@ -127,7 +128,7 @@ const getNumber = async () => {
       type: form.value.rubberType,
     })
     if (res.success) {
-      remainingQuantity.value = (res.data.remainWeight / 1000).toFixed(2)
+      remainingQuantity.value = res.data.remainWeight.toFixed(2)
     }
     else {
       uni.showToast({
@@ -175,8 +176,8 @@ const newGoodsFileList = (a: any, b: any) => {
 const forbidden = ref<boolean>(false)
 // 提交
 const submit = async () => {
-  console.log('remainingQuantity.value < form.value.productNumber', remainingQuantity.value,  form.value.productNumber);
-  
+  console.log('remainingQuantity.value < form.value.productNumber', remainingQuantity.value, form.value.productNumber)
+
   if (Number(remainingQuantity.value) < Number(form.value.productNumber)) {
     uni.showToast({
       title: '重量不能超过剩余数量',
@@ -191,7 +192,7 @@ const submit = async () => {
       })
       forbidden.value = true
       form.value.productUnitPrice = Number(form.value.productUnitPrice).toFixed(2)
-      const res: any = await rubberStationGenOrder({ ...form.value,  productNumber: form.value.productNumber * 1000 })
+      const res: any = await rubberStationGenOrder({ ...form.value, productNumber: form.value.productNumber * 1000 })
       if (res.success) {
         uni.hideLoading()
         forbidden.value = false
@@ -226,7 +227,6 @@ const goProtocol = (num: number) => {
 
 onLoad((e: any) => {
   unitPrice.value = (e.amt - 2000).toFixed(2)
-  form.value.productUnitPrice = unitPrice.value
   getRubberFactory()
 })
 onShow(() => {
@@ -265,11 +265,15 @@ onShow(() => {
           </view>
           <view class="rinput flex-row items-center justify-end">
             <input
-              v-model="form.productUnitPrice" class="tend" placeholder="请输入胶厂收胶价" placeholder-class="placeholder"
+              v-model="form.productUnitPrice"
+              disabled
+              class="tend"
+              placeholder="请输入胶厂收胶价"
+              placeholder-class="placeholder"
               type="digit" @blur="blurdj"
             >
             <text style="width: 120rpx;text-align: end;">
-              元/吨
+              元/公斤
             </text>
           </view>
         </view>
@@ -312,7 +316,7 @@ onShow(() => {
             剩余数量
           </view>
           <view class="rinput justify-end">
-            <text>{{ remainingQuantity }}吨</text>
+            <text>{{ remainingQuantity }}公斤</text>
           </view>
         </view>
         <view class="row flex-row items-center justify-between">
@@ -325,7 +329,7 @@ onShow(() => {
               type="digit"
             >
             <text style="width: 60rpx;text-align: end;">
-              吨
+              公斤
             </text>
           </view>
         </view>

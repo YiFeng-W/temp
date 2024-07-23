@@ -6,10 +6,10 @@ import { getAuthInfo, getFontSize, getToken, getUserInfo } from '@/utils/local-s
 import {
   bindSeller,
   getDetailForArticles,
+  getFactoryInfo,
+  getRU2409,
   getRubberStationDetail,
   getRubberStationToatl,
-  getRU2409,
-  getFactoryInfo,
   getTodayOrdersInfo,
 } from '@/api/pages/index'
 
@@ -79,8 +79,8 @@ const getPrice = async () => {
   try {
     const res: any = await getRU2409()
     if (res.success) {
-      console.log(res);
-      newPrice.value = Number(res.data.curData.price);
+      console.log(res)
+      newPrice.value = Number(res.data.curData.price)
       uni.setStorageSync('marketData', res.data.marketData)
       gnList.value[3].path
         = `/pagesHome/src/iWantToSellGoods/index?amt=${newPrice.value}`
@@ -142,7 +142,8 @@ const getFactoryWeight = async () => {
   const res: any = await getTodayOrdersInfo()
   if (res.success) {
     factoryCount.value = res.data.totalCount
-  } else {
+  }
+  else {
     uni.showToast({
       title: res.msg,
       icon: 'none',
@@ -283,14 +284,13 @@ const goNewsDetails = (item: any) => {
 const scanTheCode = () => {
   uni.scanCode({
     success: async (res: any) => {
-      
       if (res.result.includes('userId')) {
         const obja: any = res.result.split('{')
         const objb: any = obja[1].split('}')
         const objc: any = objb[0].split(',')
         const obj: any = objc[1].split(':')
-        console.log(obj[1]);
-        
+        console.log(obj[1])
+
         try {
           const res: any = await bindSeller({
             sellerId: obj[1],
@@ -366,7 +366,8 @@ const setPrice = () => {
     uni.navigateTo({
       url: `/pagesMy/src/setPrice/index?id=${factoryId.value}&amt=${factoryPrice.value}&price=${newPrice.value}`,
     })
-  } else {
+  }
+  else {
     uni.navigateTo({
       url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}&price=${newPrice.value}`,
     })
@@ -454,7 +455,7 @@ const gofptt = () => {
 }
 
 onLoad(() => {
-  console.log('onload');
+  console.log('onload')
 })
 onShow(() => {
   baseFontSize.value = getFontSize()
@@ -520,20 +521,28 @@ onShow(() => {
         </view>
         <view class="titr flex-row justify-between items-center">
           <view class="flex-row items-center">
-            <view class="label"></view>
-            <view class="zx">资讯</view>
+            <view class="label" />
+            <view class="zx">
+              资讯
+            </view>
           </view>
           <view class="flex-row items-center" @click="goNews">
-            <view class="more">查看更多</view>
-            <up-icon name="arrow-right" color="#2BAE85" size="24rpx"></up-icon>
+            <view class="more">
+              查看更多
+            </view>
+            <up-icon name="arrow-right" color="#2BAE85" size="24rpx" />
           </view>
         </view>
         <view class="box info">
-          <view class="row flex-row justify-between" v-for="(item, id) in newsList" :key="id"
-            @click="goNewsDetails(item)">
-            <image :src="item.imagePath" mode="scaleToFill"></image>
+          <view
+            v-for="(item, id) in newsList" :key="id" class="row flex-row justify-between"
+            @click="goNewsDetails(item)"
+          >
+            <image :src="item.imagePath" mode="scaleToFill" />
             <view class="content flex-col justify-between">
-              <view class="text">{{ item.title }}</view>
+              <view class="text">
+                {{ item.title }}
+              </view>
               <view class="date">
                 <view>{{ item.contentSource }} </view>
                 <view>{{ getData(item.createTime) }} </view>

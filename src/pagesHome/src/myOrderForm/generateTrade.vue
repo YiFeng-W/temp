@@ -3,11 +3,11 @@ import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getFontSize, getUserInfo } from '@/utils/local-storage'
 import {
+  confrimStatus,
   getQrOrderDetail,
   getStationInfoByUser,
+  updateUnitPrice,
   uploadPayImage,
-  confrimStatus,
-  updateUnitPrice
 } from '@/api/pagesHome/iWantToSellGoods/index'
 
 // 根字体大小
@@ -159,14 +159,15 @@ const orderId = ref('')
 const confrim = () => {
   if (xyValue.value) {
     confrimStatus({
-      orderId: orderId.value
+      orderId: orderId.value,
     }).then((res: any) => {
       console.log(res)
       if (res.success) {
         getForm()
       }
     })
-  } else {
+  }
+  else {
     uni.showToast({
       title: '请勾选并同意协议',
       icon: 'none',
@@ -177,14 +178,15 @@ const confrim = () => {
 const confrimPayStatus = () => {
   if (xyValue.value) {
     uploadPayImage({
-      orderId: orderId.value
+      orderId: orderId.value,
     }).then((res: any) => {
       console.log(res)
       if (res.success) {
         getForm()
       }
     })
-  } else {
+  }
+  else {
     uni.showToast({
       title: '请勾选并同意协议',
       icon: 'none',
@@ -197,17 +199,19 @@ const createOrder = async () => {
   if (xyValue.value) {
     const res: any = await updateUnitPrice({
       orderId: form.value.id,
-      unitPrice: price.value
+      unitPrice: price.value,
     })
     if (res.success) {
       getForm()
-    } else {
+    }
+    else {
       uni.showToast({
         title: res.msg,
         icon: 'none',
       })
     }
-  } else {
+  }
+  else {
     uni.showToast({
       title: '请勾选并同意协议',
       icon: 'none',
@@ -246,11 +250,11 @@ onLoad((e: any) => {
         </view>
         <view class="row flex-row justify-between items-center">
           <view>胶厂收胶价</view>
-          <view>{{ form.qrcodeOrderVO.productUnitPrice }}元/吨</view>
+          <view>{{ form.qrcodeOrderVO.productUnitPrice }}元/公斤</view>
         </view>
         <view v-if="buyerOrSeller == 1 && form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -2" class="row flex-row justify-between items-center">
-          <view>修改胶厂收胶价(元/吨)</view>
-          <input class="input" placeholder="请输入收胶价格" v-model="price" />
+          <view>修改胶厂收胶价(元/公斤)</view>
+          <input v-model="price" class="input" placeholder="请输入收胶价格">
         </view>
         <view class="row flex-row justify-between items-center">
           <view>橡胶类型</view>
@@ -258,11 +262,11 @@ onLoad((e: any) => {
         </view>
         <view v-if="form.orderRubberExtendVO.rubberType === 1" class="row flex-row justify-between items-center">
           <view>干含比</view>
-          <view>{{ form.orderRubberExtendVO.dryWater }}%</view>
+          <view>{{ form.dryWater }}%</view>
         </view>
         <view class="row flex-row justify-between items-center">
           <view>重量</view>
-          <view>{{ form.qrcodeOrderVO.usageQuantity }}吨</view>
+          <view>{{ form.qrcodeOrderVO.usageQuantity }}公斤</view>
         </view>
         <view class="row flex-row justify-between items-center">
           <view>橡胶金额</view>
@@ -302,7 +306,7 @@ onLoad((e: any) => {
       </view>
 
       <view v-if="buyerOrSeller == 3 ">
-        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -1"  class="function">
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -1" class="function">
           <view class="agreement flex-row justify-center items-center">
             <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
               <up-checkbox :name="true" />
@@ -316,7 +320,7 @@ onLoad((e: any) => {
             确认交易
           </view>
         </view>
-        <view v-if="form.payStatus == 1 && form.orderRubberExtendVO.checkStatus == 2"  class="function">
+        <view v-if="form.payStatus == 1 && form.orderRubberExtendVO.checkStatus == 2" class="function">
           <view class="agreement flex-row justify-center items-center">
             <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
               <up-checkbox :name="true" />
@@ -333,7 +337,7 @@ onLoad((e: any) => {
       </view>
 
       <view v-if="buyerOrSeller == 1">
-        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -2"  class="function">
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -2" class="function">
           <view class="agreement flex-row justify-center items-center">
             <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
               <up-checkbox :name="true" />
@@ -347,7 +351,7 @@ onLoad((e: any) => {
             生成交易
           </view>
         </view>
-        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == 1"  class="function">
+        <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == 1" class="function">
           <view class="agreement flex-row justify-center items-center">
             <up-checkbox-group v-model="xyValue" shape="circle" @change="checkboxChange">
               <up-checkbox :name="true" />

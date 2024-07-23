@@ -33,6 +33,8 @@ const getUserType = () => {
   }
 }
 
+const roleFlag = ref<any>()
+
 // 判断是否有值
 const have = (value: any) => {
   return value !== undefined && value !== null && value !== ''
@@ -81,6 +83,7 @@ const loginOut = () => {
 }
 
 onLoad(() => {
+  roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
   baseFontSize.value = getFontSize()
   getUserType()
 })
@@ -92,7 +95,7 @@ onLoad(() => {
     <view class="pd">
       <view class="box">
         <view class="row flex-row justify-between items-center" @click="goStore">
-          <view>胶站信息</view>
+          <view>{{ roleFlag === 1 ? '胶厂' : '胶站' }}信息</view>
           <up-icon name="arrow-right" color="#A0A0A0" size="36rpx" />
         </view>
         <view class="row flex-row justify-between items-center" @click="goxgmm">
