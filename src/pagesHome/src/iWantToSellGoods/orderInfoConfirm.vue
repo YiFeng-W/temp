@@ -126,7 +126,7 @@
 				</view>
 			</view>
 			<view class="function">
-				<view v-if="(form.orderRubberExtendVO.checkStatus === 1||form.orderRubberExtendVO.checkStatus === 2) && form.sellerName === currentUserName" class="btn items-center justify-center" @click="showPopup">确认收款</view>
+				<view v-if="form.orderRubberExtendVO.checkStatus === 2 && form.sellerName === currentUserName" class="btn items-center justify-center" @click="showPopup">确认收款</view>
 				<!-- <view v-if="form.orderRubberExtendVO.checkStatus === 1 && buyerOrSeller !== 2" class="btn items-center justify-center" @click="showPopup">线下支付</view> -->
 				<view v-if="form.orderRubberExtendVO.checkStatus === 1 && buyerOrSeller !== 2" class="flex-row justify-between">
 					<view class="btn1 items-center justify-center" @click="binding">线上支付</view>

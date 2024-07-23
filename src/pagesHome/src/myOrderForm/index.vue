@@ -509,14 +509,14 @@ onShow(() => {
                 <view class="text1">
                   类型：{{ item.rubberType === 1 ? '胶水' : '胶块' }}
                 </view>
-                <view class="mt flex-row justify-between items-center">
+                <!-- <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     干含比：{{ item.dryWater }}
                   </view>
                   <view class="text2">
                     %
                   </view>
-                </view>
+                </view> -->
                 <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     重量：{{ item.productCount }}
