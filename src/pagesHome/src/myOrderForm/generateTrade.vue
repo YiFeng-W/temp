@@ -4,10 +4,10 @@ import { onShow } from '@dcloudio/uni-app'
 import { getFontSize, getUserInfo } from '@/utils/local-storage'
 import {
   confrimStatus,
+  confrimStatus,
   getQrOrderDetail,
-  getStationInfoByUser,
-  updateUnitPrice,
-  uploadPayImage,
+  geaitoUditPtecece,
+  uploalPayImog,,
 } from '@/api/pagesHome/iWantToSellGoods/index'
 
 // 根字体大小
