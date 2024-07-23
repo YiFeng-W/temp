@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+import dayjs from 'dayjs'
 import { cancelQrOrder, getOrderQrcode, getQrOrderList } from '@/api/pagesMy/myOrderForm'
 import { getFontSize, getUserInfo, setQRCode } from '@/utils/local-storage'
 import voidPrompt from '@/components/void-prompt/index.vue'
-import dayjs from 'dayjs'
 // 根字体大小
 const baseFontSize = ref<number>(1)
 // 用户类型
@@ -44,10 +44,10 @@ const judgeUser = () => {
     userContent.value.czBtn = 'btnb1'
     userContent.value.qdBtn = 'btnb2'
     if (orderType.value === '1') {
-      tabList.value = [{ name: '全部', value: ''  }, { name: '待确认', value: -1  }, { name: '待收款', value: 2  }, { name: '已取消', value: 4 }]
+      tabList.value = [{ name: '全部', value: '' }, { name: '待确认', value: -1 }, { name: '待收款', value: 2 }, { name: '已取消', value: 4 }]
     }
     else {
-      tabList.value = [{ name: '全部', value: ''  }, { name: '待付款', value: 1 }, { name: '已支付', value: 2  }, { name: '已取消', value: 4 }]
+      tabList.value = [{ name: '全部', value: '' }, { name: '待付款', value: 1 }, { name: '已支付', value: 2 }, { name: '已取消', value: 4 }]
     }
   }
   else if (userType === 1) {
@@ -135,9 +135,9 @@ const getOrderList = async () => {
     tradeStatus: tabIndex.value,
     buyerOrSeller: orderType.value === '1' ? 2 : 1,
     type: type.value,
-    startDate:startDate.value,
-    endDate:endDate.value,
-    keywords: keyWord.value
+    startDate: startDate.value,
+    endDate: endDate.value,
+    keywords: keyWord.value,
   }
   try {
     const res: any = await getQrOrderList(data)
@@ -192,7 +192,7 @@ const changeTab = (e: any) => {
     tabIndex.value = e.value
   }
   // tabIndex.value = e.value
-  
+
   form.value = []
   page.value = 1
   getOrderList()
@@ -286,65 +286,76 @@ const monthlyList = ref<any>([
 // 按月选择
 const quickChooseParams = ref<any>()
 const quickChooseOptions = ref<any>([
-{
-	code: 'today',
-	name: '当日',
-}, {
-	code: 'yesterday',
-	name: '昨日',
-}, {
-	code: 'week',
-	name: '本周',
-}, {
-	code: 'lastWeek',
-	name: '上周',
-}, {
-	code: 'month',
-	name: '本月',
-}, {
-	code: 'year',
-	name: '今年',
-}]
+  {
+    code: 'today',
+    name: '当日',
+  },
+  {
+    code: 'yesterday',
+    name: '昨日',
+  },
+  {
+    code: 'week',
+    name: '本周',
+  },
+  {
+    code: 'lastWeek',
+    name: '上周',
+  },
+  {
+    code: 'month',
+    name: '本月',
+  },
+  {
+    code: 'year',
+    name: '今年',
+  },
+],
 )
-  
-const changeQuickParams = (id:any)=>{
+
+const changeQuickParams = (id: any) => {
   // 根据传入值，设置开始时间和结束时间
-  if(id === 'today'){
-    startDate.value =  dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value =  dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
-  }else if(id === 'yesterday'){
-    startDate.value = dayjs(new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs(new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-  }else if(id === 'week'){
-    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay()-1)*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs(new Date(new Date().getTime() + (7 - new Date().getDay())*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-  }else if(id === 'lastWeek'){
-    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay() + 6)*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay())*24*60*60*1000).toLocaleDateString()).format('YYYY-MM-DD')
-  }else if(id === 'month'){
-    startDate.value =dayjs( new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString()).format('YYYY-MM-DD')
+  if (id === 'today') {
+    startDate.value = dayjs(new Date().toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date().toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 'yesterday') {
+    startDate.value = dayjs(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 'week') {
+    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay() - 1) * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() + (7 - new Date().getDay()) * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 'lastWeek') {
+    startDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay() + 6) * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date(new Date().getTime() - (new Date().getDay()) * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+  }
+  else if (id === 'month') {
+    startDate.value = dayjs(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString()).format('YYYY-MM-DD')
     endDate.value = dayjs(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleDateString()).format('YYYY-MM-DD')
-  }else if(id === 'year'){
+  }
+  else if (id === 'year') {
     startDate.value = dayjs(new Date(new Date().getFullYear(), 0, 1).toLocaleDateString()).format('YYYY-MM-DD')
     endDate.value = dayjs(new Date(new Date().getFullYear(), 11, 31).toLocaleDateString()).format('YYYY-MM-DD')
-	} 
+  }
   quickChooseParams.value = id
-	isMonthly.value = null
+  isMonthly.value = null
 }
 // 选中月
 const changeMonthly = (id: any) => {
-    // 根据传入值，设置开始时间和结束时间，格式化时间yyyy-MM-dd
+  // 根据传入值，设置开始时间和结束时间，格式化时间yyyy-MM-dd
   if (id === 0) {
-    startDate.value = dayjs( new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+    startDate.value = dayjs(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date().toLocaleDateString()).format('YYYY-MM-DD')
   }
   else if (id === 1) {
-    startDate.value = dayjs( new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+    startDate.value = dayjs(new Date(new Date().getTime() - 90 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date().toLocaleDateString()).format('YYYY-MM-DD')
   }
   else if (id === 2) {
-    startDate.value = dayjs( new Date(new Date().getTime() - 180 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
-    endDate.value = dayjs( new Date().toLocaleDateString()).format('YYYY-MM-DD')
+    startDate.value = dayjs(new Date(new Date().getTime() - 180 * 24 * 60 * 60 * 1000).toLocaleDateString()).format('YYYY-MM-DD')
+    endDate.value = dayjs(new Date().toLocaleDateString()).format('YYYY-MM-DD')
   }
   isMonthly.value = id
   quickChooseParams.value = null
@@ -360,24 +371,24 @@ const showCalendar = ref<boolean>(false)
 const selectDate = (id: any, date: any) => {
   showCalendar.value = true
 }
-const confirmDateRange = (e:any) => {
+const confirmDateRange = (e: any) => {
   startDate.value = e[0]
-  endDate.value = e[e.length-1]
+  endDate.value = e[e.length - 1]
   isMonthly.value = null
   quickChooseParams.value = null
   showCalendar.value = false
-};
+}
 // 重置时间参数
-const resetDateParams  = ()=>{
+const resetDateParams = () => {
   startDate.value = ''
   endDate.value = ''
   isMonthly.value = null
   quickChooseParams.value = null
 }
 // 确定搜索
-const confirDateParams = ()=>{
-	getOrderList()
-	showPopup.value = false
+const confirDateParams = () => {
+  getOrderList()
+  showPopup.value = false
 }
 // 跳转详情
 const goDetails = (id: any) => {
@@ -423,12 +434,15 @@ onLoad((e: any) => {
   keyWord.value = ''
   if (userType == 1) {
     placeholder.value = '请输入胶站名称'
-  } else if (userType == 2) {
+  }
+  else if (userType == 2) {
     placeholder.value = '请输入胶站名称'
-  } else {
+  }
+  else {
     if (e.type == 2) {
       placeholder.value = '请输入胶农名称'
-    } else {
+    }
+    else {
       placeholder.value = '请输入胶厂名称'
     }
   }
@@ -469,15 +483,15 @@ onShow(() => {
       >
         <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
           <view class="tit flex-row justify-between items-center">
-          <!--  <view v-if="orderType === 1" style="font-weight: bold;">
+            <!--  <view v-if="orderType === 1" style="font-weight: bold;">
               {{ item.buyerName }}
             </view>
             <view v-else style="font-weight: bold;">
               {{ item.sellerName }}
             </view> -->
-			<view  style="font-weight: bold;">
-			  {{ item.buyerName }}
-			</view>
+            <view style="font-weight: bold;">
+              {{ item.buyerName }}
+            </view>
             <view :style="{ color: retColor(item.checkStatus) }">
               {{ retType(item.checkStatus) }}
             </view>
@@ -489,41 +503,41 @@ onShow(() => {
                 <view class="text1">
                   类型：{{ item.rubberType === 1 ? '胶水' : '胶块' }}
                 </view>
-                <view class="mt flex-row justify-between items-center">
+                <!-- <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     干含比：{{ item.dryWater }}
                   </view>
                   <view class="text2">
                     %
                   </view>
-                </view>
+                </view> -->
                 <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     重量：{{ item.productCount }}
                   </view>
-                 <!-- <view v-if="userType === 2" class="text2">
+                  <!-- <view v-if="userType === 2" class="text2">
                     公斤
                   </view>
                   <view v-else class="text2">
                     吨
                   </view> -->
-				  <view  class="text2">
-				    kg
-				  </view>
+                  <view class="text2">
+                    kg
+                  </view>
                 </view>
                 <view class="mt flex-row justify-between items-center">
                   <view class="text1">
                     收胶价：{{ item.productUnitPrice }}
                   </view>
-               <!--   <view v-if="userType === 2" class="text2">
+                  <!--   <view v-if="userType === 2" class="text2">
                     元/公斤
                   </view>
                   <view v-else class="text2">
                     元/吨
                   </view> -->
-				  <view  class="text2">
-				    元/kg
-				  </view>
+                  <view class="text2">
+                    元/kg
+                  </view>
                 </view>
                 <view class="text3">
                   订单金额 ¥ {{ item.productTotalPrice }} 元
@@ -602,14 +616,14 @@ onShow(() => {
             {{ item.name }}
           </view>
         </view>
-		<view class="monthly" style="display: flex;align-items: center;justify-content: flex-start;flex-wrap: wrap;">
-			<view
-			  v-for="item in quickChooseOptions" :key="item.code" :class="quickChooseParams === item.code ? userContent.smbtn : 'mbtn'"
-			  @click="changeQuickParams(item.code)"
-			>
-			  {{ item.name }}
-			</view>
-		</view>
+        <view class="monthly" style="display: flex;align-items: center;justify-content: flex-start;flex-wrap: wrap;">
+          <view
+            v-for="item in quickChooseOptions" :key="item.code" :class="quickChooseParams === item.code ? userContent.smbtn : 'mbtn'"
+            @click="changeQuickParams(item.code)"
+          >
+            {{ item.name }}
+          </view>
+        </view>
         <view class="custom flex-row justify-between items-center noswap">
           <view class="date" @click="selectDate(1, startDate)">
             {{ startDate || '起始时间' }}
@@ -619,12 +633,12 @@ onShow(() => {
             {{ endDate || '结束时间' }}
           </view>
         </view>
-        <up-calendar :minDate="new Date('2024-01-01')" :maxDate="new Date()" :monthNum="12" :show="showCalendar" mode="range" @confirm="confirmDateRange" @close="showCalendar = false" />
+        <up-calendar :min-date="new Date('2024-01-01')" :max-date="new Date()" :month-num="12" :show="showCalendar" mode="range" @confirm="confirmDateRange" @close="showCalendar = false" />
         <view class="function flex-row justify-between items-center">
           <view class="justify-center items-center" :class="userContent.czBtn" @click="resetDateParams">
             重置
           </view>
-          <view class="justify-center items-center" @click="confirDateParams"  :class="userContent.qdBtn">
+          <view class="justify-center items-center" :class="userContent.qdBtn" @click="confirDateParams">
             确定
           </view>
         </view>
