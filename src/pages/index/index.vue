@@ -7,9 +7,9 @@ import {
   bindSeller,
   getDetailForArticles,
   getFactoryInfo,
-  getFU2409,
-  getRactoryInfo,
   getRU2409,
+  getRubberStationDetail,
+  getRubberStationToatl,
   getTodayOrdersInfo,
 } from '@/api/pages/index'
 
@@ -143,7 +143,6 @@ const getFactoryWeight = async () => {
   if (res.success) {
     factoryCount.value = res.data.totalCount
   }
- 
   else {
     uni.showToast({
       title: res.msg,
@@ -284,7 +283,8 @@ const goNewsDetails = (item: any) => {
 // 胶站扫码
 const scanTheCode = () => {
   uni.scanCode({
-    suif (res.result.includes('userId')) {
+    success: async (res: any) => {
+      if (res.result.includes('userId')) {
         const obja: any = res.result.split('{')
         const objb: any = obja[1].split('}')
         const objc: any = objb[0].split(',')
@@ -367,7 +367,6 @@ const setPrice = () => {
       url: `/pagesMy/src/setPrice/index?id=${factoryId.value}&amt=${factoryPrice.value}&price=${newPrice.value}`,
     })
   }
- 
   else {
     uni.navigateTo({
       url: `/pagesMy/src/setPrice/index?id=${stationId.value}&amt=${stationPrice.value}&price=${newPrice.value}`,
@@ -521,28 +520,20 @@ onShow(() => {
           </view>
         </view>
         <view class="titr flex-row justify-between items-center">
-          <view class="flex-row tcenter">
-            <view class="labe
-              l"
-             />
+          <view class="flex-row items-center">
+            <view class="label" />
             <view class="zx">
               资讯
             </view>
-              
-            
-          </view> 
+          </view>
           <view class="flex-row items-center" @click="goNews">
             <view class="more">
               查看更多
-            </v
-        i" class="row flex-row justify-between
-            <up-icon name="arrow-right" 
-          color="#2BAE85" size="24rpx" />
-          </view> 
+            </view>
+            <up-icon name="arrow-right" color="#2BAE85" size="24rpx" />
+          </view>
         </view>
         <view class="box info">
-                
-              
           <view
             v-for="(item, id) in newsList" :key="id" class="row flex-row justify-between"
             @click="goNewsDetails(item)"

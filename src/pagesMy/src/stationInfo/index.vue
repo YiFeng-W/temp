@@ -3,15 +3,12 @@ import { ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { getAuthInfo, getFontSize, getUserInfo } from '@/utils/local-storage'
 import { getRubberStationDetail } from '@/api/pages/index'
-</script>
 
-<script lang="ts" setup>
 // 根字体大小
 const baseFontSize = ref<number>(1)
 const stationInfo = ref<any>()
 const roleFlag = ref<any>()
 
-// 获取胶站详情
 const getStationDetail = async () => {
   try {
     const res: any = await getRubberStationDetail()
@@ -29,10 +26,6 @@ const getStationDetail = async () => {
     // TODO handle the exception
   }
 }
-// 确认返回
-const returnBack = async () => {
-  uni.navigateBack()
-}
 
 onLoad(() => {
   getStationDetail()
@@ -41,35 +34,9 @@ onLoad(() => {
 onShow(() => {
   baseFontSize.value = getFontSize()
   roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
-})
-
-// 根字体大小
-const baseFontSize = ref<number>(1)
-const stationInfo = ref<any>()
-onLoad(() => {
-  getStationDetail()
-})
-onShow(() => {
-  baseFontSize.value = getFontSize()
 })
 // 获取胶站详情
-const getStationDetail = async () => {
-  try {
-    const res: any = await getRubberStationDetail()
-    if (res.success) {
-      stationInfo.value = res.data
-    }
-    else {
-      uni.showToast({
-        title: res.msg,
-        icon: 'none',
-      })
-    }
-  }
-  catch (e) {
-    // TODO handle the exception
-  }
-}
+
 // 确认返回
 const returnBack = async () => {
   uni.navigateBack()

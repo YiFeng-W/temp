@@ -20,11 +20,7 @@
 						</view>
 						<view class="mg flex-row justify-between items-center">
 							<view class="tit">订单状态</view>
-<<<<<<< HEAD
 							<view class="text">{{ retType(item.payStatus) }}</view>
-=======
-							<view class="text">{{ retType(item.orderStatus) }}</view>
->>>>>>> dc24160138df40a2a9e14bece9e06b61e3e6ae90
 						</view>
 						<view class="mg flex-row justify-between items-center">
 							<view class="tit">下单时间</view>
@@ -84,7 +80,6 @@ const judgeUser = () => {
 }
 // 返回对应订单状态
 const retType = (xj: any) => {
-<<<<<<< HEAD
 	if (xj === 0) {
 		return '待付款'
 	} else if (xj === 1) {
@@ -113,31 +108,6 @@ const retType = (xj: any) => {
 //   else {
 //     return '已取消'
 //   }
-=======
-  if (xj === 1) {
-    if (userType.value === 3) {
-      return '待胶厂支付'
-    }
-    else {
-      return tabList.value[1].name
-    }
-  }
-  else if (xj === 2) {
-    return tabList.value[2].name
-  }
-  else if (xj === 3) {
-    return '已完成'
-  }
-  else if (xj === -1) {
-    return '待确认'
-  }
-  else if (xj === -2) {
-    return '待交易'
-  }
-  else {
-    return '已取消'
-  }
->>>>>>> dc24160138df40a2a9e14bece9e06b61e3e6ae90
 }
 
 const getOrderListByDay = async () => {
