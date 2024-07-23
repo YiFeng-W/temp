@@ -489,14 +489,11 @@ onShow(() => {
         >
           <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
             <view class="tit flex-row justify-between items-center">
-              <view v-if="orderType === 1" style="font-weight: bold;">
+              <view v-if="orderType === '1'" style="font-weight: bold;">
                 {{ item.buyerName }}
               </view>
               <view v-else style="font-weight: bold;">
                 {{ item.sellerName }}
-              </view>
-              <view style="font-weight: bold;">
-                {{ userType === 1 ? item.sellerName : item.buyerName }}
               </view>
               <view :style="{ color: retColor(item.checkStatus) }">
                 {{ retType(item.checkStatus) }}

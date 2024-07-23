@@ -80,7 +80,11 @@ const judgeUser = () => {
 }
 // 返回对应订单状态
 const retType = (xj: any) => {
+
 	if (xj === 0) {
+		if(summaryType.value === '1'){
+			return '待胶厂付款'
+		}
 		return '待付款'
 	} else if (xj === 1) {
 		return '已付款'

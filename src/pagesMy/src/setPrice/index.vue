@@ -17,8 +17,8 @@ onLoad((option: any) => {
   stationPrice.value = option.amt
   if (option.price) {
     const price = (Number(option.price) - 2000) / 1000
-    min.value = (price * 0.75).toFixed(2)
-    max.value = (price * 1.25).toFixed(2)
+    min.value = price ? (price * 0.75).toFixed(2) : 0
+    max.value = price ? (price * 1.25).toFixed(2) : 0
   }
 })
 onShow(() => {
