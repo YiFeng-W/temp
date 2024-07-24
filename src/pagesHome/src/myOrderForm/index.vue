@@ -498,7 +498,7 @@ onShow(() => {
             <view style="font-weight: bold;">
               {{ item.buyerName }}
             </view>
-            <view :style="{ color: retColor(item.checkStatus) }">
+            <view :style="{ color: retColor(item.checkStatus), whiteSpace: 'nowrap'}">
               {{ retType(item.checkStatus) }}
             </view>
           </view>
@@ -545,8 +545,14 @@ onShow(() => {
                     元/kg
                   </view>
                 </view>
+                <view class="text3">
+                订单金额 ¥ {{ item.productTotalPrice }} 元
+                </view>
               </view>
-              <view v-if="userType === 2" class="function flex-row justify-end">
+             
+            </view>
+            
+            <view v-if="userType === 2" class="function flex-row justify-end">
                 <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
                   查看二维码
                 </view>
@@ -555,13 +561,13 @@ onShow(() => {
                 </view>
               </view>
               <view v-if="userType === 3" class="function flex-row justify-end">
-                <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
+                <view v-if="item.checkStatus === -2" class="btn1" @click.stop="cancelOrder(item.id)">
                   取消订单
                 </view>
-                <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
+                <view v-if="item.checkStatus === -1 || item.checkStatus === -2" class="btn1 jz_color-border" @click.stop="goQRCode(item)">
                   查看二维码
                 </view>
-                <view v-if="item.checkStatus === 1 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
+                <view v-if="item.checkStatus === -1 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
                   确认交易
                 </view>
                 <view v-if="item.checkStatus === 2 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
@@ -586,53 +592,8 @@ onShow(() => {
                 </view>
                 <view v-if="item.checkStatus === 3" class="btn4" @click.stop="goInvoice()">
                   申请开票
-                <view class="text3">
-                  订单金额 ¥ {{ item.productTotalPrice }} 元
                 </view>
               </view>
-            </view>
-            <view v-if="userType === 2" class="function flex-row justify-end">
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
-                查看二维码
-              </view>
-              <view v-if="item.checkStatus === 2" class="btn2" @click.stop="goDetails(item.id)">
-                确认收款
-              </view>
-            </view>
-            <view v-if="userType === 3" class="function flex-row justify-end">
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
-                取消订单
-              </view>
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
-                查看二维码
-              </view>
-              <view v-if="item.checkStatus === 1 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
-                确认交易
-              </view>
-              <view v-if="item.checkStatus === 2 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
-                确认收款
-              </view>
-              <view v-if="item.checkStatus === 1 && orderType === '2'" class="btn3" @click.stop="goDetails(item.id)">
-                支付订单
-              </view>
-            </view>
-            <view v-if="userType === 1" class="function flex-row justify-end">
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
-                取消订单
-              </view>
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
-                查看二维码
-              </view>
-              <view v-if="item.checkStatus === 1" class="btn4" @click.stop="goDetails(item.id)">
-                生成交易
-              </view>
-              <view v-if="item.checkStatus === 2" class="btn4" @click.stop="goPayment(item.id)">
-                确认支付
-              </view>
-              <view v-if="item.checkStatus === 3" class="btn4" @click.stop="goInvoice()">
-                申请开票
-              </view>
-            </view>
           </view>
         </view>
         <view v-if="showMore">

@@ -304,7 +304,6 @@ onLoad((e: any) => {
           <view>{{ jzInfo.type === 1 ? '国营' : jzInfo.type === 2 ? '私人' : '代理' }}</view>
         </view>
       </view>
-
       <view v-if="buyerOrSeller == 3 ">
         <view v-if="form.payStatus == 0 && form.orderRubberExtendVO.checkStatus == -1" class="function">
           <view class="agreement flex-row justify-center items-center">
