@@ -2,8 +2,8 @@
 export const SYSTEM_INFO = uni.getSystemInfoSync()
 
 // 测试地址
+// export const HOST = 'https://smton.net'
 export const HOST = 'http://47.109.129.34:8091'
-// export const HOST = 'http://47.109.129.34:8091'
 // 生产地址
 // export const HOST = "https://nanhua.smton.net/";
 // 后端地址

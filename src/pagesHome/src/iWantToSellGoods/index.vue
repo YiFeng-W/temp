@@ -164,6 +164,7 @@
 	}
 	// 确认
 	const confirmSort = (e : any) => {
+		form.value.certificateInfoId = e.value[0].id
 		form.value.productName = e.value[0].productName
 		form.value.categoryName = e.value[0].categoryName
 		form.value.categoryId = e.value[0].plantCategoryId
@@ -232,7 +233,7 @@
 	const blurdj = () => {
 		const maxPrice = Number(new Decimal(unitPrice.value).mul(new Decimal(1.25)))
 		const minPrice = Number(new Decimal(unitPrice.value).mul(new Decimal(0.75)))
-		if (form.value.productUnitPrice > maxPrice || form.value.productUnitPrice < minPrice) {
+		if (form.value.rubberType==1 && (form.value.productUnitPrice > maxPrice || form.value.productUnitPrice < minPrice)) {
 			form.value.productUnitPrice = unitPrice.value
 			uni.showToast({
 				title: '单价不能大于' + maxPrice + '或小于' + minPrice,

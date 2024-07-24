@@ -198,6 +198,7 @@ const changeTab = (e: any) => {
     tabIndex.value = e.value
   }
   // tabIndex.value = e.value
+
   form.value = []
   page.value = 1
   getOrderList()
@@ -482,62 +483,66 @@ onShow(() => {
       </view>
     </view>
     <view v-if="form.length !== 0" class="pd">
-      <scroll-view>
-        <view
-          v-if="form.length !== 0" scroll-y :lower-threshold="10"
-          :style="{ height: 'calc(100vh - 250rpx)' }" @scrolltolower="scrolltolower"
-        >
-          <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
-            <view class="tit flex-row justify-between items-center">
-              <view v-if="orderType === '1'" style="font-weight: bold;">
-                {{ item.buyerName }}
-              </view>
-              <view v-else style="font-weight: bold;">
-                {{ item.sellerName }}
-              </view>
-              <view :style="{ color: retColor(item.checkStatus) }">
-                {{ retType(item.checkStatus) }}
-              </view>
+      <scroll-view
+        v-if="form.length !== 0" scroll-y :lower-threshold="10"
+        :style="{ height: 'calc(100vh - 250rpx)' }" @scrolltolower="scrolltolower"
+      >
+        <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
+          <view class="tit flex-row justify-between items-center">
+            <!--  <view v-if="orderType === 1" style="font-weight: bold;">
+              {{ item.buyerName }}
             </view>
-            <view class="content">
-              <view class="flex-row">
-                <image :src="have(item.thumbnail) ? item.thumbnail : '../../../static/image/defaultImg.png'" mode="" />
-                <view class="rt">
+            <view v-else style="font-weight: bold;">
+              {{ item.sellerName }}
+            </view> -->
+            <view style="font-weight: bold;">
+              {{ item.buyerName }}
+            </view>
+            <view :style="{ color: retColor(item.checkStatus) }">
+              {{ retType(item.checkStatus) }}
+            </view>
+          </view>
+          <view class="content">
+            <view class="flex-row">
+              <image :src="have(item.thumbnail) ? item.thumbnail : '../../../static/image/defaultImg.png'" mode="" />
+              <view class="rt">
+                <view class="text1">
+                  类型：{{ item.rubberType === 1 ? '胶水' : '胶块' }}
+                </view>
+                <!-- <view class="mt flex-row justify-between items-center">
                   <view class="text1">
-                    类型：{{ item.rubberType === 1 ? '胶水' : '胶块' }}
+                    干含比：{{ item.dryWater }}
                   </view>
-                  <view class="mt flex-row justify-between items-center">
-                    <view class="text1">
-                      干含比：{{ item.dryWater }}
-                    </view>
-                    <view class="text2">
-                      %
-                    </view>
+                  <view class="text2">
+                    %
                   </view>
-                  <view class="mt flex-row justify-between items-center">
-                    <view class="text1">
-                      重量：{{ item.productCount }}
-                    </view>
-                    <view class="text2">
-                      kg
-                    </view>
+                </view> -->
+                <view class="mt flex-row justify-between items-center">
+                  <view class="text1">
+                    重量：{{ item.productCount }}
                   </view>
-                  <view class="mt flex-row justify-between items-center">
-                    <view class="text1">
-                      收胶价：{{ item.productUnitPrice }}
-                    </view>
-                    <!--   <view v-if="userType === 2" class="text2">
+                  <!-- <view v-if="userType === 2" class="text2">
+                    公斤
+                  </view>
+                  <view v-else class="text2">
+                    吨
+                  </view> -->
+                  <view class="text2">
+                    kg
+                  </view>
+                </view>
+                <view class="mt flex-row justify-between items-center">
+                  <view class="text1">
+                    收胶价：{{ item.productUnitPrice }}
+                  </view>
+                  <!--   <view v-if="userType === 2" class="text2">
                     元/公斤
                   </view>
                   <view v-else class="text2">
                     元/吨
                   </view> -->
-                    <view class="text2">
-                      元/kg
-                    </view>
-                  </view>
-                  <view class="text3">
-                    订单金额 ¥ {{ item.productTotalPrice }} 元
+                  <view class="text2">
+                    元/kg
                   </view>
                 </view>
               </view>
@@ -581,13 +586,57 @@ onShow(() => {
                 </view>
                 <view v-if="item.checkStatus === 3" class="btn4" @click.stop="goInvoice()">
                   申请开票
+                <view class="text3">
+                  订单金额 ¥ {{ item.productTotalPrice }} 元
                 </view>
               </view>
             </view>
+            <view v-if="userType === 2" class="function flex-row justify-end">
+              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
+                查看二维码
+              </view>
+              <view v-if="item.checkStatus === 2" class="btn2" @click.stop="goDetails(item.id)">
+                确认收款
+              </view>
+            </view>
+            <view v-if="userType === 3" class="function flex-row justify-end">
+              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
+                取消订单
+              </view>
+              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
+                查看二维码
+              </view>
+              <view v-if="item.checkStatus === 1 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
+                确认交易
+              </view>
+              <view v-if="item.checkStatus === 2 && orderType === '1'" class="btn3" @click.stop="goDetails(item.id)">
+                确认收款
+              </view>
+              <view v-if="item.checkStatus === 1 && orderType === '2'" class="btn3" @click.stop="goDetails(item.id)">
+                支付订单
+              </view>
+            </view>
+            <view v-if="userType === 1" class="function flex-row justify-end">
+              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
+                取消订单
+              </view>
+              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
+                查看二维码
+              </view>
+              <view v-if="item.checkStatus === 1" class="btn4" @click.stop="goDetails(item.id)">
+                生成交易
+              </view>
+              <view v-if="item.checkStatus === 2" class="btn4" @click.stop="goPayment(item.id)">
+                确认支付
+              </view>
+              <view v-if="item.checkStatus === 3" class="btn4" @click.stop="goInvoice()">
+                申请开票
+              </view>
+            </view>
           </view>
-          <view v-if="showMore">
-            <uni-load-more :status="moreStatus" />
-          </view>
+        </view>
+        <view v-if="showMore">
+          <uni-load-more :status="moreStatus" />
         </view>
       </scroll-view>
     </view>
