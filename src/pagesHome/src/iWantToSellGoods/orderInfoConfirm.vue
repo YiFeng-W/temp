@@ -109,7 +109,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="protocol1" v-if="(form.orderRubberExtendVO.checkStatus === 1||form.orderRubberExtendVO.checkStatus === 2) && buyerOrSeller === 2">
+			<view class="protocol1" v-if="form.orderRubberExtendVO.checkStatus === 2 && form.sellerName === currentUserName">
 				<view class="flex-row justify-center items-center">
 					<up-checkbox-group v-model="checkboxValue" shape="circle">
 						<up-checkbox :name="true"></up-checkbox>
@@ -245,7 +245,6 @@
 			const res : any = await getQrOrderDetail(parameter.value)
 			if (res.success) {
 				form.value = res.data
-				console.log(form)
 				if (res.data.qrcodeOrderVO.productImage !== null) {
 					if (res.data.qrcodeOrderVO.productImage[0] !== "") {
 						res.data.qrcodeOrderVO.productImage.forEach((item : any) => {
@@ -344,6 +343,13 @@
 	const tipsText = ref<string>('是否确认收款')
 	// 显示弹窗
 	const showPopup = () => {
+		if(!currentUserName.value){
+			uni.showToast({
+				title: '请先登录',
+				icon: 'none'
+			});
+			return
+		}
 		if (checkboxValue.value[0]) {
 			show.value = true
 			if (buyerOrSeller.value === 2) {
@@ -441,6 +447,14 @@
 	const openid = ref<string>()
 	// 获取openid
 	const binding = () => {
+		if(!currentUserName.value){
+				uni.hideLoading();
+				uni.showToast({
+					title: '请先登录',
+					icon: 'none'
+				});
+				return
+			}
 		if (checkboxValue.value[0]) {
 			uni.showLoading({
 				title: '加载中',
@@ -541,6 +555,7 @@
 		if (have(getUserInfo().nickName)) {
 			currentUserName.value = getUserInfo().nickName
 		}
+		
 		if (have(getUserInfo().buyerOrSeller)) {
 			buyerOrSeller.value = getUserInfo().buyerOrSeller
 		} else {
