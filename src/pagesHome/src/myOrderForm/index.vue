@@ -570,7 +570,7 @@ onShow(() => {
                 <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
                   取消订单
                 </view>
-                <view v-if="item.checkStatus === 1" class="btn1" @click.stop="goQRCode(item)">
+                <view v-if="item.checkStatus === 1" class="btn1 jc_color-border" @click.stop="goQRCode(item)">
                   查看二维码
                 </view>
                 <view v-if="item.checkStatus === 1" class="btn4" @click.stop="goDetails(item.id)">
