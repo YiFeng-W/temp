@@ -196,6 +196,7 @@ const scanQRCode = () => {
   uni.scanCode({
     success: (res) => {
       const id = res.result.split('?')
+      console.log('[res, id]', res, id);
       uni.navigateTo({
         url: `/pagesHome/src/iWantToSellGoods/orderInfoConfirm?${id[1]}`,
       })
@@ -280,20 +281,32 @@ const goNewsDetails = (item: any) => {
   })
 }
 
+const extractUserId = (str: string) => {
+    try {
+        const regex = /"userId":(\d+)/;
+        const match = str.match(regex);
+        const userId = match[1];
+        return userId;
+    } catch (error) {
+        console.log(error);
+        return null
+    }
+}
+
 // 胶站扫码
 const scanTheCode = () => {
   uni.scanCode({
     success: async (res: any) => {
+      console.log('res.result: ', res.result);
       if (res.result.includes('userId')) {
-        const obja: any = res.result.split('{')
-        const objb: any = obja[1].split('}')
-        const objc: any = objb[0].split(',')
-        const obj: any = objc[1].split(':')
-        console.log(obj[1])
-
+        // const obja: any = res.result.split('{')
+        // const objb: any = obja[1].split('}')
+        // const objc: any = objb[0].split(',')
+        // const obj: any = objc[1].split(':')
+        const sellerId = extractUserId(res.result)
         try {
           const res: any = await bindSeller({
-            sellerId: obj[1],
+            sellerId: sellerId,
           })
           if (res.success) {
             uni.showToast({
@@ -302,7 +315,7 @@ const scanTheCode = () => {
               duration: 3000,
             })
             uni.navigateTo({
-              url: `/pagesMy/src/userInfo/authenticationInfoview?id=${obj[1]}`,
+              url: `/pagesMy/src/userInfo/authenticationInfoview?id=${sellerId}`,
             })
           }
           else {
