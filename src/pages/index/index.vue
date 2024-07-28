@@ -298,12 +298,17 @@ const scanTheCode = () => {
   uni.scanCode({
     success: async (res: any) => {
       console.log('res.result: ', res.result);
-      if (res.result.includes('userId')) {
+      const result = res.result.trim()
+      const reg = /^\d+$/
+      console.log('res.result: ', res.result, result);
+      if (reg.test(result)) {
         // const obja: any = res.result.split('{')
         // const objb: any = obja[1].split('}')
         // const objc: any = objb[0].split(',')
         // const obj: any = objc[1].split(':')
-        const sellerId = extractUserId(res.result)
+        // --
+        // const sellerId = extractUserId(result)
+        const sellerId = result
         try {
           const res: any = await bindSeller({
             sellerId: sellerId,

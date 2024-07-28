@@ -22,7 +22,8 @@ export const addAuthCompany = (data: object) => {
 
 // 生成身份信息码
 export const generateIdCardQrCode = () => {
-    return request("/user/user/v1/generateIdCardQrCode", 'POST')
+    // return request("/user/user/v1/generateIdCardQrCode", 'POST')
+    return request("/user/user/v2/generateIdCardQrCode", 'POST')
 }
 
 // 根据ID获取胶农信息

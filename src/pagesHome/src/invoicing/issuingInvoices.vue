@@ -21,7 +21,7 @@
 				</view>
 				<view class="form">
 					<view class="flex-row justify-between row">
-						<view class="rtit">抬头名称</view>
+						<view class="rtit"><view class="mark">*</view>抬头名称</view>
 						<view class="flex-row items-center">
 							<input v-model="form.title" placeholder="请输入抬头名称" />
 							<view style="width: 50rpx;" class="justify-center items-center" @click="showHeader">
@@ -30,7 +30,7 @@
 						</view>
 					</view>
 					<view v-if="form.titleType === 2" class="flex-row justify-between row">
-						<view class="rtit">纳税人识别号</view>
+						<view class="rtit"><view class="mark">*</view>纳税人识别号</view>
 						<input v-model="form.creditCode" placeholder="请输入纳税人识别号" />
 					</view>
 					<view v-if="form.titleType === 2" class="flex-row justify-between row">
@@ -58,7 +58,7 @@
 				</view>
 			</view>
 			<view class="box">
-				<view class="tit">接收方式</view>
+				<view class="tit"><view class="mark">*</view>接收方式</view>
 				<view class="form">
 					<view class="flex-row justify-between row">
 						<view class="rtit">电子邮箱</view>
@@ -338,6 +338,11 @@
 	
 	// 提交时禁用按钮？
 	const forbidden = ref<boolean>(false)
+
+	const checkBank = (str: string) => {
+		const reg = /^\d{8,26}$/
+		return reg.test(str)
+	}
 	// 提交
 	const submit = () => {
 		if (!have(form.value.title)) {
@@ -350,27 +355,32 @@
 				title: '请输入纳税人识别号',
 				icon: 'none'
 			})
-		} else if (!have(form.value.businessAddress) && form.value.titleType === 2) {
-			uni.showToast({
-				title: '请输入公司地址',
-				icon: 'none'
-			})
-		} else if (!have(form.value.registeredPhone)) {
-			uni.showToast({
-				title: '请输入电话号码',
-				icon: 'none'
-			})
-		} else if (!have(form.value.depositBank) && form.value.titleType === 2) {
+		} 
+		// else if (!have(form.value.businessAddress) && form.value.titleType === 2) {
+		// 	uni.showToast({
+		// 		title: '请输入公司地址',
+		// 		icon: 'none'
+		// 	})
+		// } 
+		// else if (!have(form.value.registeredPhone)) {
+		// 	uni.showToast({
+		// 		title: '请输入电话号码',
+		// 		icon: 'none'
+		// 	})
+		// } 
+		else if (have(form.value.bankAccount) && !have(form.value.depositBank) && form.value.titleType === 2) {
 			uni.showToast({
 				title: '请输入开户银行',
 				icon: 'none'
 			})
-		} else if (!have(form.value.bankAccount) && form.value.titleType === 2) {
+		} 
+		else if (have(form.value.bankAccount) && form.value.titleType === 2 && !checkBank(form.value.bankAccount)) {
 			uni.showToast({
-				title: '请输入银行账户',
+				title: '请输入合法的银行账户',
 				icon: 'none'
 			})
-		} else if (!have(form.value.emailAddress)) {
+		} 
+		else if (!have(form.value.emailAddress)) {
 			uni.showToast({
 				title: '请输入电子邮箱',
 				icon: 'none'
@@ -482,6 +492,10 @@
 </script>
 
 <style lang="scss" scoped>
+	.mark {
+		color: red;
+		display: inline
+	}
 	.pd {
 		padding: 24rpx 24rpx 24rpx 24rpx;
 

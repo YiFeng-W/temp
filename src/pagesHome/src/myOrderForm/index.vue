@@ -593,9 +593,9 @@ onShow(() => {
               </view>
             </view>
           </view>
-          <view v-if="showMore">
-            <uni-load-more :status="moreStatus" />
-          </view>
+        </view>
+        <view v-if="showMore">
+          <uni-load-more :status="moreStatus" />
         </view>
       </scroll-view>
     </view>
