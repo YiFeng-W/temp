@@ -537,7 +537,7 @@ onShow(() => {
             <view>{{ item.name }}</view>
           </view>
         </view>
-        <view class="titr flex-row justify-between items-center">
+        <view v-if="false" class="titr flex-row justify-between items-center">
           <view class="flex-row items-center">
             <view class="label" />
             <view class="zx">
@@ -551,7 +551,7 @@ onShow(() => {
             <up-icon name="arrow-right" color="#2BAE85" size="24rpx" />
           </view>
         </view>
-        <view class="box info">
+        <view v-if="false" class="box info">
           <view
             v-for="(item, id) in newsList" :key="id" class="row flex-row justify-between"
             @click="goNewsDetails(item)"
