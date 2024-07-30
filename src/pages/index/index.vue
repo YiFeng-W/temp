@@ -40,6 +40,8 @@ const factoryId = ref<any>()
 const factoryPrice = ref<any>(0)
 // 胶厂收胶重量
 const factoryCount = ref<any>()
+// 胶厂名称
+const factoryName = ref<any>('')
 // 功能列表
 const gnList = ref<any>([
   {
@@ -157,6 +159,7 @@ const getDetailJC = async () => {
   if (res.success) {
     factoryId.value = res.data.id
     factoryPrice.value = res.data.rubberPrice
+    factoryName.value = res.data.name
   }
   else {
     uni.showToast({
@@ -699,7 +702,7 @@ onShow(() => {
         <view class="flex-row justify-between items-center">
           <image src="@/static/image/glueStation/staName.png" mode="scaleToFill" class="tx" />
           <view class="content1 flex-col justify-around">
-            <view>{{ getUserInfo().nickName }}</view>
+            <view>{{ factoryName }}</view>
           </view>
           <!-- <image src="@/static/image/pages/news.png" mode="scaleToFill" class="news"></image> -->
           <view class="news" />

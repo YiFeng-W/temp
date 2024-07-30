@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { getAuthInfo, getFontSize, getUserInfo } from '@/utils/local-storage'
-import { getRubberStationDetail } from '@/api/pages/index'
+import { getRubberStationDetail, getFactoryInfo } from '@/api/pages/index'
 
 // 根字体大小
 const baseFontSize = ref<number>(1)

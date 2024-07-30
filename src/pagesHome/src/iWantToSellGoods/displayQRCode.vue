@@ -1,6 +1,6 @@
 <template>
 	<page-meta :root-font-size="`${baseFontSize}px`"></page-meta>
-	<view class="padbg">
+	<view :class="'type' + authInfo.buyerOrSeller">
 		<view class="pd">
 			<view class="box">
 				<view class="flex-col items-center">
@@ -22,7 +22,7 @@
 	import { onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 	import { getQrcodeStatus } from '@/api/pagesHome/iWantToSellGoods/index'
 	import { getQRCode } from '@/utils/local-storage';
-	import { getAuthInfo, getFontSize } from '@/utils/local-storage';
+	import { getFontSize } from '@/utils/local-storage';
 
 	// 根字体大小
 	const baseFontSize = ref<number>(1)
@@ -36,7 +36,9 @@
 	const data = ref<object>({})
 
 	// 用户信息
-	const authInfo = getAuthInfo()
+	const authInfo = getUserInfo()
+	console.log('authInfo', authInfo);
+	
 
 	// 展示内容
 	const state = ref<string>('')
@@ -144,6 +146,22 @@
 					color: $sbgcolor1;
 				}
 			}
+		}
+	}
+	.type1 {
+		.tips {
+			color: $sbgcolor11 !important;
+		}
+		.ccontent  {
+			color: $sbgcolor11 !important;
+		}
+	}
+	.type3 {
+		.tips {
+			color: $sbgcolor8 !important;
+		}
+		.ccontent  {
+			color: $sbgcolor8 !important;
 		}
 	}
 </style>

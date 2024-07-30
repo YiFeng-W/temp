@@ -35,7 +35,7 @@ const judgeUser = () => {
     userContent.value.smbtn = 'smbtn1'
     userContent.value.czBtn = 'btna1'
     userContent.value.qdBtn = 'btna2'
-    tabList.value = [{ name: '全部', value: '' }, { name: '待支付', value: 1 }, { name: '待收款', value: 2 }, { name: '已取消', value: 4 }]
+    tabList.value = [{ name: '全部', value: '' }, { name: '待支付', value: 1 }, { name: '待收款', value: 2 }, { name: '已完成', value: 3 }, { name: '已取消', value: 4 }]
   }
   else if (userType === 3) {
     userContent.value.screen = '../../../static/image/screen2.png'
@@ -44,10 +44,10 @@ const judgeUser = () => {
     userContent.value.czBtn = 'btnb1'
     userContent.value.qdBtn = 'btnb2'
     if (orderType.value === '1') {
-      tabList.value = [{ name: '全部', value: '' }, { name: '待确认', value: -1 }, { name: '待收款', value: 2 }, { name: '已取消', value: 4 }]
+      tabList.value = [{ name: '全部', value: '' }, { name: '待确认', value: -1 }, { name: '待收款', value: 2 }, { name: '已完成', value: 3 }, { name: '已取消', value: 4 }]
     }
     else {
-      tabList.value = [{ name: '全部', value: '' }, { name: '待付款', value: 1 }, { name: '已支付', value: 2 }, { name: '已取消', value: 4 }]
+      tabList.value = [{ name: '全部', value: '' }, { name: '待付款', value: 1 }, { name: '已支付', value: 2 }, { name: '已完成', value: 3 }, { name: '已取消', value: 4 }]
     }
     uni.setNavigationBarTitle({
       title: orderType.value === '1' ? '售胶订单' : '收胶订单',
@@ -59,7 +59,7 @@ const judgeUser = () => {
     userContent.value.smbtn = 'smbtn3'
     userContent.value.czBtn = 'btnc1'
     userContent.value.qdBtn = 'btnc2'
-    tabList.value = [{ name: '全部', value: '' }, { name: '待交易', value: -2 }, { name: '待支付', value: 1 }, { name: '已取消', value: 4 }]
+    tabList.value = [{ name: '全部', value: '' }, { name: '待交易', value: -2 }, { name: '待支付', value: 1 }, { name: '已完成', value: 3 }, { name: '已取消', value: 4 }]
     uni.setNavigationBarTitle({
       title: orderType.value === '1' ? '售胶订单' : '收胶订单',
     })
@@ -182,22 +182,22 @@ const enterSearchitect = () => {
 }
 // tab改变时
 const changeTab = (e: any) => {
-  if (e.index === 1) {
-    tabIndex.value = 1
-  }
-  else if (e.index === 2) {
-    tabIndex.value = 2
-  }
-  else if (e.index === 3) {
-    tabIndex.value = 4
-  }
-  else {
-    tabIndex.value = null
-  }
-  if (userType == 1) {
-    tabIndex.value = e.value
-  }
-  // tabIndex.value = e.value
+  // if (e.index === 1) {
+  //   tabIndex.value = 1
+  // }
+  // else if (e.index === 2) {
+  //   tabIndex.value = 2
+  // }
+  // else if (e.index === 3) {
+  //   tabIndex.value = 4
+  // }
+  // else {
+  //   tabIndex.value = null
+  // }
+  // if (userType == 1) {
+  //   tabIndex.value = e.value
+  // }
+  tabIndex.value = e.value
 
   form.value = []
   page.value = 1
@@ -488,14 +488,11 @@ onShow(() => {
       >
         <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
           <view class="tit flex-row justify-between items-center">
-            <!--  <view v-if="orderType === 1" style="font-weight: bold;">
+             <view v-if="orderType === 1" style="font-weight: bold;">
               {{ item.buyerName }}
             </view>
             <view v-else style="font-weight: bold;">
               {{ item.sellerName }}
-            </view> -->
-            <view style="font-weight: bold;">
-              {{ item.buyerName }}
             </view>
             <view :style="{ color: retColor(item.checkStatus), whiteSpace: 'nowrap' }">
               {{ retType(item.checkStatus) }}
@@ -576,19 +573,19 @@ onShow(() => {
               </view>
             </view>
             <view v-if="userType === 1" class="function flex-row justify-end">
-              <view v-if="item.checkStatus === 1" class="btn1" @click.stop="cancelOrder(item.id)">
+              <view v-if="item.checkStatus === -2" class="btn1" @click.stop="cancelOrder(item.id)">
                 取消订单
               </view>
               <view v-if="item.checkStatus === 1" class="btn1 jc_color-border" @click.stop="goQRCode(item)">
                 查看二维码
               </view>
-              <view v-if="item.checkStatus === 1" class="btn4" @click.stop="goDetails(item.id)">
+              <view v-if="item.checkStatus === -2" class="btn4" @click.stop="goDetails(item.id)">
                 生成交易
               </view>
-              <view v-if="item.checkStatus === 2" class="btn4" @click.stop="goPayment(item.id)">
+              <view v-if="item.checkStatus === 1" class="btn4" @click.stop="goPayment(item.id)">
                 确认支付
               </view>
-              <view v-if="item.checkStatus === 3" class="btn4" @click.stop="goInvoice()">
+              <view v-if="item.checkStatus === 3 && item.invoice_id != 0" class="btn4" @click.stop="goInvoice()">
                 申请开票
               </view>
             </view>
