@@ -11,7 +11,12 @@ const roleFlag = ref<any>()
 
 const getStationDetail = async () => {
   try {
-    const res: any = await getRubberStationDetail()
+    let res: any;
+    if (roleFlag.value == 3) {
+      res  = await getRubberStationDetail()
+    } else {
+      res = await getFactoryInfo()
+    }
     if (res.success) {
       stationInfo.value = res.data
     }
@@ -45,7 +50,7 @@ const returnBack = async () => {
 
 <template>
   <page-meta :root-font-size="`${baseFontSize}px`" />
-  <view class="box padbg">
+  <view v-if="roleFlag == 3" class="box padbg">
     <view class="info">
       <view class="info_item">
         <view>站点名称</view>
@@ -65,6 +70,47 @@ const returnBack = async () => {
       </view>
       <view class="info_item">
         <view>站点编号</view>
+        <view>{{ stationInfo && stationInfo.code }}</view>
+      </view>
+      <view class="info_item">
+        <view>联系人</view>
+        <view>{{ stationInfo && stationInfo.userName }}</view>
+      </view>
+      <view class="info_item">
+        <view>联系电话</view>
+        <view>{{ stationInfo && stationInfo.phoneNumber }}</view>
+      </view>
+      <view class="info_item">
+        <view class="title">
+          详细地址
+        </view>
+        <view class="tip">
+          {{ stationInfo && stationInfo.detailAddress }}
+        </view>
+      </view>
+    </view>
+    <view class="sure">
+      <view
+        v-if="roleFlag === 1"
+        class="lock chang" @click="returnBack"
+      >
+        确认
+      </view>
+      <view
+        v-else class="lock" @click="returnBack"
+      >
+        确认
+      </view>
+    </view>
+  </view>
+  <view v-else class="box padbg">
+    <view class="info">
+      <view class="info_item">
+        <view>胶厂名称</view>
+        <view>{{ stationInfo && stationInfo.name }}</view>
+      </view>
+      <view class="info_item">
+        <view>胶厂编号</view>
         <view>{{ stationInfo && stationInfo.code }}</view>
       </view>
       <view class="info_item">
