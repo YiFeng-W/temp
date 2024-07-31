@@ -196,6 +196,13 @@ const confrimPayStatus = () => {
 
 const price = ref<any>()
 const createOrder = async () => {
+  if (!price.value) {
+    uni.showToast({
+      title: '请输入修改后的收胶价',
+      icon: 'none',
+    })
+    return
+  }
   if (xyValue.value) {
     const res: any = await updateUnitPrice({
       orderId: form.value.id,

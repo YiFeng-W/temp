@@ -203,17 +203,19 @@
 				icon: 'none'
 			})
 		} 
-		else if (!have(form.value.emailAddress)) {
+		else if (!have(form.value.emailAddress) && !have(form.value.phoneNumber)) {
 			uni.showToast({
-				title: '请输入电子邮箱',
+				title: '请输入接收方式',
 				icon: 'none'
 			})
-		} else if (!have(form.value.phoneNumber)) {
-			uni.showToast({
-				title: '请输入接收电话',
-				icon: 'none'
-			})
-		} else {
+		} 
+		// else if (!have(form.value.phoneNumber)) {
+		// 	uni.showToast({
+		// 		title: '请输入接收电话',
+		// 		icon: 'none'
+		// 	})
+		// } 
+		else {
 			if (have(headerId.value)) {
 				modifyInvoiceHeader()
 			} else {

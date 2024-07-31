@@ -192,7 +192,7 @@ const submit = async () => {
       })
       forbidden.value = true
       form.value.productUnitPrice = Number(form.value.productUnitPrice).toFixed(2)
-      const res: any = await rubberStationGenOrder({ ...form.value, productNumber: form.value.productNumber * 1000 })
+      const res: any = await rubberStationGenOrder({ ...form.value, productNumber: form.value.productNumber })
       if (res.success) {
         uni.hideLoading()
         forbidden.value = false
