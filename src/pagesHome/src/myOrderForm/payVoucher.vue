@@ -20,12 +20,12 @@ const fileList = ref<any>([])
 const productImage = ref<any>([])
 // 返回的文件内容
 const newFileList = (a: any, b: any) => {
-  if (a.length === 0) {
-    productImage.value = []
-    a.forEach((e: any) => {
-      productImage.value.push(e.url)
-    })
-  }
+  console.log('newFileList', a, b);
+  
+  productImage.value = []
+  a.forEach((e: any) => {
+    productImage.value.push(e.url)
+  })
 }
 
 const pay = async () => {

@@ -298,7 +298,11 @@ const newOpposite = (e: any, z: any) => {
 // 添加个人信息认证
 const addPersonal = async () => {
   try {
-    const res: any = await addAuthIndividual(personal.value);
+    const params = { ...personal.value }
+    if (params.validPeriod.includes('长期')) {
+      params.validPeriod = params.validPeriod.replace('长期', '2099.12.31')
+    }
+    const res: any = await addAuthIndividual(params);
     if (res.success) {
       uni.hideLoading();
       uni.$u.toast("添加个人信息认证成功");
