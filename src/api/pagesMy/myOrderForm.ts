@@ -23,3 +23,21 @@ export const getOrderQrcode = (data: {
 export const getProxyOrderList = (data: object) => {
     return request("/user/bnRubberStation/v1/proxyOrderList", 'POST', data)
 }
+
+// 导出胶农售胶
+export const exportData2 = (data: object) => {
+    return request("/user/bnRubberStation/v1/exportTodayOrderDetails", 'GET', data)
+}
+// 导出胶站收胶、售胶
+// type 1 卖 售
+export const exportData31 = (data: object) => {
+    return request("/user/bnRubberStation/v1/exportTodaySettleOrderDetails", 'GET', data)
+}
+// type 2 买 收
+export const exportData32 = (data: object) => {
+    return request("/user/bnRubberStation/v1/exportTodayOrderDetails", 'GET', data)
+}
+// 导出胶厂收胶
+export const exportData1 = (data: object) => {
+    return request("/user/rubberFactory/v1/exportTodayOrderDetails", 'GET', data)
+}

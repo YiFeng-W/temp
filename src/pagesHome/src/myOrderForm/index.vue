@@ -434,6 +434,74 @@ const goInvoice = () => {
   })
 }
 
+const downloadDate = ref({
+  s: '',
+  e: ''
+})
+const showPopupDownload = ref(false)
+const confirmDateRangeDownLoad = (e: any) => {
+  downloadDate.value.s = e[0]
+  downloadDate.value.e = e[1]
+  showCalendar.value = false
+}
+
+
+
+import { HOST } from '../../../config'
+// 导出胶农售胶
+const exportData2 = '/user/bnRubberStation/v1/exportTodayOrderDetails'
+// 导出胶站收胶、售胶
+// type 1 卖 售
+const exportData31 = '/user/bnRubberStation/v1/exportTodaySettleOrderDetails'
+// type 2 买 收
+const exportData32 = '/user/bnRubberStation/v1/exportTodayOrderDetails'
+// 导出胶厂收胶
+const exportData1 = '/user/rubberFactory/v1/exportTodayOrderDetails'
+const exportData = async () => {
+  if (!downloadDate.value.s || !downloadDate.value.e) {
+    return
+  }
+  let fn: any = null
+  if (userType == 1) {
+    fn = exportData1
+  } else if (userType == 2) {
+    fn = exportData2
+  } else {
+    if (orderType.value == 2) {
+      fn = exportData32
+    } else {
+      fn = exportData31
+    }
+  }
+  uni.downloadFile({
+    url: HOST + fn + `?endCreateDate=${downloadDate.value.s}&startCreateDate=${downloadDate.value.e}`,
+    header: {
+      'authentication': getToken(),
+    },
+    success: (res) => {
+      console.log('success', res);
+      uni.getFileSystemManager().saveFile({
+        tempFilePath: res.tempFilePath,
+        filePath: `${wx.env.USER_DATA_PATH}/订单.xls`,
+        success: res => {
+          console.log(res);
+          
+          uni.openDocument({
+            filePath: res.savedFilePath,
+            fileType: 'xls',
+            showMenu: true
+          })
+        },
+        fail: err => console.log('fail', err)
+      })
+    },
+    fail: err => {
+      console.log('fail', err);
+      
+    }
+  })
+}
+
 onLoad((e: any) => {
   orderType.value = e.type
   keyWord.value = ''
@@ -471,6 +539,7 @@ onShow(() => {
           <input v-model="keyWord" :placeholder="placeholder" confirm-type="search" @confirm="enterSearchitect">
         </view>
         <image :src="userContent.screen" mode="scaleToFill" @click="showPopup = true" />
+        <image src="../../../static/image/download.png" mode="scaleToFill" @click="showPopupDownload = true" class="download"  />
       </view>
       <view class="tabs">
         <up-tabs
@@ -647,6 +716,25 @@ onShow(() => {
         </view>
       </view>
     </up-popup>
+
+    <up-popup :show="showPopupDownload" bg-color="#fff">
+      <view class="popup">
+        <view class="tit">
+          导出订单数据
+        </view>
+        <view class="custom flex-row justify-between items-center noswap">
+          <view class="date" @click="selectDate(1, startDate)">
+            选择导出范围 {{ downloadDate.s }}{{ downloadDate.e }}
+          </view>
+        </view>
+        <up-calendar :min-date="new Date('2024-01-01')" :max-date="new Date()" :month-num="12"  :allowSameDay="true" :show="showCalendar" mode="range" @confirm="confirmDateRangeDownLoad" @close="showCalendar = false" />
+        <view class="function flex-row justify-between items-center">
+          <button class="justify-center items-center" :class="userContent.qdBtn" @click="exportData">
+            导出数据
+          </button>
+        </view>
+      </view>
+    </up-popup>
   </view>
 </template>
 
@@ -671,11 +759,21 @@ onShow(() => {
     input {
       width: calc(100% - 66rpx);
     }
+
   }
 
   image {
     width: 66rpx;
     height: 66rpx;
+  }
+
+  .download {
+    width: 66rpx;
+    height: 66rpx;
+    padding: 16rpx;
+    box-sizing: border-box;
+    background-color: $sbgcolor5;
+    border-radius: 50%
   }
 
   .tabs {
