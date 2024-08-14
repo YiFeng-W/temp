@@ -33,8 +33,8 @@ const getStationDetail = async () => {
 }
 
 onLoad(() => {
-  getStationDetail()
   roleFlag.value = uni.getStorageSync('userInfo').buyerOrSeller
+  getStationDetail()
 })
 onShow(() => {
   baseFontSize.value = getFontSize()

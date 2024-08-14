@@ -59,6 +59,11 @@ export const getRubberFactoryList = () => {
   return request('/user/rubberFactory/v1/getRubberFactoryList', 'POST')
 }
 
+// 获取胶站列表
+export const getRubberStationMap = () => {
+  return request('/user/bnRubberStation/v1/getRubberStationMap', 'POST')
+}
+
 // 获取收购统计信息
 export const getStatisticsByType = (data: object) => {
   return request('/user/bnRubberStatisticsLog/v1/getStatisticsByType', 'POST', data)

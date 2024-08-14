@@ -440,8 +440,10 @@ const downloadDate = ref({
 })
 const showPopupDownload = ref(false)
 const confirmDateRangeDownLoad = (e: any) => {
+  console.log(e);
+  
   downloadDate.value.s = e[0]
-  downloadDate.value.e = e[1]
+  downloadDate.value.e = e[e.length - 1]
   showCalendar.value = false
 }
 
@@ -449,7 +451,7 @@ const confirmDateRangeDownLoad = (e: any) => {
 
 import { HOST } from '../../../config'
 // 导出胶农售胶
-const exportData2 = '/user/bnRubberStation/v1/exportTodayOrderDetails'
+const exportData2 = '/user/rubberFarmer/v1/exportTodaySettleOrderDetails'
 // 导出胶站收胶、售胶
 // type 1 卖 售
 const exportData31 = '/user/bnRubberStation/v1/exportTodaySettleOrderDetails'
@@ -474,7 +476,7 @@ const exportData = async () => {
     }
   }
   uni.downloadFile({
-    url: HOST + fn + `?endCreateDate=${downloadDate.value.s}&startCreateDate=${downloadDate.value.e}`,
+    url: HOST + fn + `?endCreateDate=${downloadDate.value.e}&startCreateDate=${downloadDate.value.s}`,
     header: {
       'authentication': getToken(),
     },
@@ -482,7 +484,7 @@ const exportData = async () => {
       console.log('success', res);
       uni.getFileSystemManager().saveFile({
         tempFilePath: res.tempFilePath,
-        filePath: `${wx.env.USER_DATA_PATH}/订单.xls`,
+        filePath: `${wx.env.USER_DATA_PATH}/${new Date().getTime()}订单.xls`,
         success: res => {
           console.log(res);
           
@@ -557,7 +559,7 @@ onShow(() => {
       >
         <view v-for="(item, id) in form" :key="id" class="box" @click="goDetails(item.id)">
           <view class="tit flex-row justify-between items-center">
-             <view v-if="orderType === 1" style="font-weight: bold;">
+             <view v-if="orderType == 1" style="font-weight: bold;">
               {{ item.buyerName }}
             </view>
             <view v-else style="font-weight: bold;">
@@ -724,14 +726,17 @@ onShow(() => {
         </view>
         <view class="custom flex-row justify-between items-center noswap">
           <view class="date" @click="selectDate(1, startDate)">
-            选择导出范围 {{ downloadDate.s }}{{ downloadDate.e }}
+            选择导出范围 <text v-if="downloadDate.s">{{ downloadDate.s }} ~ {{ downloadDate.e }}</text>
           </view>
         </view>
         <up-calendar :min-date="new Date('2024-01-01')" :max-date="new Date()" :month-num="12"  :allowSameDay="true" :show="showCalendar" mode="range" @confirm="confirmDateRangeDownLoad" @close="showCalendar = false" />
         <view class="function flex-row justify-between items-center">
-          <button class="justify-center items-center" :class="userContent.qdBtn" @click="exportData">
+          <view class="justify-center items-center" :class="userContent.czBtn" @click="showPopupDownload = false">
+            关闭
+          </view>
+          <view class="justify-center items-center" :class="userContent.qdBtn" @click="exportData">
             导出数据
-          </button>
+          </view>
         </view>
       </view>
     </up-popup>

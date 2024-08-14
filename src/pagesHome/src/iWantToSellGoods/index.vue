@@ -15,6 +15,26 @@
 					<up-picker v-model="form.categoryName" :show="showSort" :columns="classificationList"
 						@cancel="cancelSort" @confirm="confirmSort" keyName="categoryName"></up-picker>
 				</view>
+				<view class="row">
+          <view class="flex-row items-center justify-between">
+            <view class="tit">
+              胶站名称
+            </view>
+            <view class="rinput flex-row items-center justify-end" @click="showName = true">
+              <text v-if="have(rubberFactoryName)">
+                {{ rubberFactoryName }}
+              </text>
+              <text v-else class="tip">
+                请选择胶站名称
+              </text>
+              <up-icon name="arrow-right" color="#A0A0A0" size="32rpx" />
+            </view>
+          </view>
+          <up-picker
+            :show="showName" :columns="nameList" key-name="name"
+            @cancel="cancelName" @confirm="confirmName"
+          />
+        </view>
 				<view class="row flex-row items-center justify-between">
 					<view class="tit">商品名称</view>
 					<view class="rinput">
@@ -95,7 +115,7 @@
 
 <script lang="ts" setup>
 	import { ref, computed } from 'vue';
-	import { getCurrentUserCertificateInfoList, addQrCodeOrder } from '@/api/pagesHome/iWantToSellGoods/index'
+	import { getRubberStationMap, getCurrentUserCertificateInfoList, addQrCodeOrder } from '@/api/pagesHome/iWantToSellGoods/index'
 	import { saveApplyInfo } from '@/api/index'
 	import { onLoad, onShow } from '@dcloudio/uni-app'
 	import { Decimal } from 'decimal.js'
@@ -105,6 +125,44 @@
 	const baseFontSize = ref<number>(1)
 	// 获取个人信息
 	const userInfo = getUserInfo()
+
+	// 选择胶厂
+	const showName = ref(false)
+	const rubberFactoryName = ref('')
+	const nameList = ref([[]])
+
+	onMounted(() => {
+		getRubberFactory()
+	})
+		// 获取胶厂
+	const getRubberFactory = async () => {
+		try {
+			const res: any = await getRubberStationMap()
+			if (res.success) {
+				nameList.value[0] = res.data
+			}
+			else {
+				uni.showToast({
+					title: res.msg,
+					icon: 'none',
+				})
+			}
+		}
+		catch (e) {
+			// TODO handle the exception
+		}
+	}
+	const cancelName = () => {
+		showName.value = false
+	}
+	const confirmName = (e: any) => {
+		showName.value = false
+		form.value.buyStationId = e.value[0].id
+		rubberFactoryName.value = e.value[0].name
+		console.log(e);
+	}
+
+
 	// 选中的多选框
 	const checkboxValue = ref<any>([])
 
@@ -128,7 +186,8 @@
 		sellerType: 1,
 		type: 1,
 		usageQuantity: null,
-		uuid: ""
+		uuid: "",
+		buyStationId: ""
 	})
 	// 销售数量
 	const salesQuantity = ref<number>(0)
@@ -289,6 +348,13 @@
 		if(form.value.productTotalPrice=="0.00"|| form.value.usageQuantity=='0'){
 			uni.showToast({
 				title: '请正确填写订单后再提交',
+				icon: 'none'
+			});
+			return
+		}
+		if (!form.value.buyStationId) {
+			uni.showToast({
+				title: '请选择胶站',
 				icon: 'none'
 			});
 			return
