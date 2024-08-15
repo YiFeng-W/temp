@@ -204,9 +204,9 @@
 		if (have(form.value.usageQuantity) && have(form.value.productUnitPrice)) {
 			const zj = new Decimal(form.value.usageQuantity).mul(new Decimal(form.value.productUnitPrice))
 			if (form.value.rubberType==1 && form.value.dryWater) {
-				form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater / 100))).toFixed(2)
+				form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater / 100))).toFixed(0)
 			}else{
-				form.value.productTotalPrice = new Decimal(zj).toFixed(2)
+				form.value.productTotalPrice = new Decimal(zj).toFixed(0)
 			}
 			return form.value.productTotalPrice
 		} else {

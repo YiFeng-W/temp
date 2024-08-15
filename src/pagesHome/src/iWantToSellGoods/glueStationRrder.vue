@@ -43,7 +43,7 @@ const have = (e: any) => {
 const totalPrice = computed(() => {
   if (have(form.value.productNumber) && have(form.value.productUnitPrice) && have(form.value.dryWater)) {
     const zj = new Decimal(form.value.productNumber).mul(new Decimal(form.value.productUnitPrice))
-    form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater / 100))).toFixed(2)
+    form.value.productTotalPrice = (new Decimal(zj).mul(new Decimal(form.value.dryWater / 100))).toFixed(0)
     console.log(form.value.productTotalPrice)
     return form.value.productTotalPrice
   }
@@ -328,7 +328,7 @@ onShow(() => {
               v-model="form.productNumber" class="tend" placeholder="请输入重量" placeholder-class="placeholder"
               type="digit"
             >
-            <text style="width: 60rpx;text-align: end;">
+            <text style="width: 70rpx;text-align: end;">
               公斤
             </text>
           </view>
@@ -339,7 +339,7 @@ onShow(() => {
           </view>
           <view class="rinput flex-row items-center justify-end">
             <text>{{ totalPrice }}</text>
-            <text style="width: 60rpx;text-align: end;">
+            <text style="width: 70rpx;text-align: end;">
               元
             </text>
           </view>
